@@ -71,12 +71,12 @@ const currencies = new Map([
   ['GBP', 'Pound sterling'],
 ]);
 
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+// const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 /////////////////////////////////////////////////
 
 // 140 Simple Array Methods
-
+/*
 let arr = ['a', 'b', 'c', 'd', 'e'];
 
 // slice method
@@ -130,5 +130,39 @@ console.log(letters.join('-'));
 
 // ALWAYS looks at MDN and choose the method appropriate for the situation
 // no need to know everything by heart.
+*/
 
-// just a test number 2
+// 141 Looping Arrays_ forEach.mp4
+
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+for (const [i, movement] of movements.entries()) {
+  if (movement > 0) {
+    console.log(`Movement ${i + 1} You deposited ${movement}`);
+  } else {
+    console.log(`Movement ${i + 1} You withdrew ${Math.abs(movement)}`);
+  }
+}
+
+console.log(`-----forEach-----`);
+
+// The forEach method requires a callback function.
+// The forEach method accepts only one parameter (movement), or two (movement, index)
+// or the 3 as below (movement, index, array)
+// The 1st one will always be the current element of the array, 2nd will be the index and 3rd
+// the entire array.
+// In the forEach we cannot use continue and break, it will always loop the entire array.
+
+movements.forEach(function (mov, i, arr) {
+  if (mov > 0) {
+    console.log(`Movement ${i + 1} You deposited ${mov} of array ${arr}`);
+  } else {
+    console.log(`Movement ${i + 1} You withdrew ${Math.abs(mov)}`); //Math.abs just to show the positive number.
+  }
+});
+
+// BEHIND THE SCENES, the forEach will cal at every iteration:
+// 0: function(200)
+// 1: function(450)
+// 2: function(400)
+// untill the end of the array...
