@@ -65,11 +65,11 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 // LECTURES
 
-const currencies = new Map([
-  ['USD', 'United States dollar'],
-  ['EUR', 'Euro'],
-  ['GBP', 'Pound sterling'],
-]);
+// const currencies = new Map([
+//   ['USD', 'United States dollar'],
+//   ['EUR', 'Euro'],
+//   ['GBP', 'Pound sterling'],
+// ]);
 
 // const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
@@ -133,7 +133,7 @@ console.log(letters.join('-'));
 */
 
 // 141 Looping Arrays_ forEach.mp4
-
+/*
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
 for (const [i, movement] of movements.entries()) {
@@ -166,3 +166,37 @@ movements.forEach(function (mov, i, arr) {
 // 1: function(450)
 // 2: function(400)
 // untill the end of the array...
+*/
+
+// 142 forEach With Maps and Sets.mp4
+
+// Map
+const currencies = new Map([
+  ['USD', 'United States dollar'], // USD  is the Key and United States Dollar is the value...
+  ['EUR', 'Euro'],
+  ['GBP', 'Pound sterling'],
+]);
+
+currencies.forEach(function (value, key, map) {
+  console.log(`${key}: ${value}`);
+});
+
+// Set
+const currenciesUnique = new Set([
+  'USD',
+  'EUR',
+  'EUR',
+  'USD',
+  'BRL',
+  'BRL',
+  'USD',
+]);
+console.log(currenciesUnique);
+currenciesUnique.forEach(function (value, key, map) {
+  // key and value are the same
+  console.log(`${key}: ${value}`);
+});
+
+// It was decided to keep the same 3 parameters to the forEach function
+// even if the set does not have key and value, only the value.
+// It is a convention to name the key of _, in JS the _ is a unnecessary variable.
