@@ -1,0 +1,13 @@
+code 
+    preferences
+        user snippets
+            new global snipets file
+                put any name (paolo)
+
+
+  "Print to console": {
+    "scope": "javascript,typescript",
+    "prefix": "cl",
+    "body": ["console.log();"],
+    "description": "Log output to console"
+  }

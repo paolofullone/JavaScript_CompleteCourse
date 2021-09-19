@@ -1,0 +1,53 @@
+/* The star * element selects all the elements of the page */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  /* it is a good practice to use border box to maintain the size of the elements no matter the size of the borders and paddin */
+}
+
+body {
+  background-color: rgb(236, 233, 212);
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 20px;
+  padding: 40px; /* adds space between the border and the element. */
+}
+h1 {
+  font-size: 40px;
+  margin-bottom: 25px; /* we can have bottom, top, left or right sided margins. */
+}
+/* .name-of-the-class applies the settings to all classes with the same name
+we can have more than 1 element with the same name. */
+h2 {
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+/* we used the .first to select the named first paragraphs, we can select all of them with the p selector */
+p {
+  margin-bottom: 20px;
+}
+.first {
+  color: red;
+}
+
+a {
+  background-color: yellowgreen;
+}
+
+/* #name-of-the-id this one cannot have multiple elements with the same id. */
+#your-name {
+  background-color: rgb(255, 230, 166);
+  border: 3px solid #444;
+  padding: 25px;
+  margin-top: 30px;
+}
+
+/* this selects only the text inside the box, you can have multiple selectors in the selection */
+#your-name h2 {
+  color: olivedrab;
+}
+
+#my-image-on-google {
+  width: 150px;
+}
