@@ -274,22 +274,36 @@ GOOD LUCK 😀
 // checkDogs([9, 16, 6, 8, 3], [10, 5, 6, 1, 4]);
 
 // Instructor Solution
-const checkDogs = function (dogsJulia, dogsKate) {
-  const dogsJuliaCorrected = dogsJulia.slice();
-  dogsJuliaCorrected.splice(0, 1);
-  dogsJuliaCorrected.splice(-2);
-  const dogs = dogsJuliaCorrected.concat(dogsKate);
-  console.log(dogs);
+// const checkDogs = function (dogsJulia, dogsKate) {
+//   const dogsJuliaCorrected = dogsJulia.slice();
+//   dogsJuliaCorrected.splice(0, 1);
+//   dogsJuliaCorrected.splice(-2);
+//   const dogs = dogsJuliaCorrected.concat(dogsKate);
+//   console.log(dogs);
 
-  dogs.forEach(function (dog, i) {
-    if (dog >= 3) {
-      console.log(`Dog number ${i + 1} is an adult, and is ${dog} years old`);
-    } else {
-      console.log(`Dog number ${i + 1} is still a puppy 🐶"`);
-    }
-  });
-};
+//   dogs.forEach(function (dog, i) {
+//     if (dog >= 3) {
+//       console.log(`Dog number ${i + 1} is an adult, and is ${dog} years old`);
+//     } else {
+//       console.log(`Dog number ${i + 1} is still a puppy 🐶"`);
+//     }
+//   });
+// };
 
-checkDogs([3, 5, 2, 12, 7], [4, 1, 15, 8, 3]);
-console.log('-----2nd call-----');
-checkDogs([9, 16, 6, 8, 3], [10, 5, 6, 1, 4]);
+// checkDogs([3, 5, 2, 12, 7], [4, 1, 15, 8, 3]);
+// console.log('-----2nd call-----');
+// checkDogs([9, 16, 6, 8, 3], [10, 5, 6, 1, 4]);
+
+// 146 Data Transformations_ map, filter, reduce.mp4
+
+// Map, filter and reduce.
+/* 
+Map is a method to perform a task in all items of the array and it returns a new array
+containing the result of the task, like all items * 2.
+
+Filter returns a new array with all the items that returned true to a given condition, 
+like item > 2.
+
+Reduce reduces the elements of an array to one value using a accumulator, like a snowball it can sum up 
+all the elements. The array [2,3,4] would return 2+3+4=9 if the operation defined is a sum.
+*/
