@@ -33,6 +33,9 @@ const account4 = {
   pin: 4444,
 };
 
+// Usually we have data coming in as a WEB API in {} and then we store the data in an
+// array like this accounts one here, this is the most common way of receiving data
+// in JS.
 const accounts = [account1, account2, account3, account4];
 
 // Elements
@@ -60,6 +63,26 @@ const inputTransferAmount = document.querySelector('.form__input--amount');
 const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
+
+// 144 Creating DOM Elements.mp4
+const displayMovements = function (movements) {
+  containerMovements.innerHTML = ''; // this line emptys the container, we had 2 movements there by default.
+  movements.forEach(function (mov, i) {
+    const type = mov > 0 ? 'deposit' : 'withdrawal';
+
+    const html = `
+      <div class="movements__row">
+        <div class="movements__type movements__type--${type}">${
+      i + 1
+    } ${type}</div>
+        <div class="movements__value">${mov}€</div>
+      </div>`;
+    containerMovements.insertAdjacentHTML('afterbegin', html); // google mdn insertAdjacentHTML to see all the methods.
+  });
+};
+displayMovements(account1.movements);
+
+// console.log(containerMovements.innerHTML); just to show the generated html.
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -169,7 +192,7 @@ movements.forEach(function (mov, i, arr) {
 */
 
 // 142 forEach With Maps and Sets.mp4
-
+/*
 // Map
 const currencies = new Map([
   ['USD', 'United States dollar'], // USD  is the Key and United States Dollar is the value...
@@ -200,3 +223,7 @@ currenciesUnique.forEach(function (value, key, map) {
 // It was decided to keep the same 3 parameters to the forEach function
 // even if the set does not have key and value, only the value.
 // It is a convention to name the key of _, in JS the _ is a unnecessary variable.
+*/
+
+// 143 PROJECT_ _Bankist_ App.mp4
+// project overview
