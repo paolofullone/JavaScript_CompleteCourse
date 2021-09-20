@@ -82,7 +82,7 @@ const displayMovements = function (movements) {
 displayMovements(account1.movements);
 
 // 148 Computing Usernames.mp4
-
+/*
 // const user = 'Steven Thomas Williams'; // username should be stw
 
 // 1st
@@ -145,6 +145,25 @@ const createUsernames = function (accs) {
 };
 createUsernames(accounts);
 console.log(accounts); // now we have a new object username.
+*/
+// End of 148
+
+// 149 The filter Method
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+const deposits = movements.filter(function (mov) {
+  return mov > 0;
+});
+console.log(movements);
+console.log(deposits); // only the positive values.
+
+// Same result with a for loop.
+const depositsFor = [];
+for (const mov of movements) if (mov > 0) depositsFor.push(mov);
+console.log(depositsFor);
+
+// When we use the methods we can chain the methods, which is impossible with the
+// for loop
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
