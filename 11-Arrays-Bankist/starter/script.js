@@ -71,18 +71,80 @@ const displayMovements = function (movements) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
-      <div class="movements__row">
-        <div class="movements__type movements__type--${type}">${
-      i + 1
-    } ${type}</div>
-        <div class="movements__value">${mov}€</div>
-      </div>`;
+    <div class="movements__row">
+    <div class="movements__type movements__type--${type}">${i + 1} ${type}</div>
+    <div class="movements__value">${mov}€</div>
+    </div>`;
     containerMovements.insertAdjacentHTML('afterbegin', html); // google mdn insertAdjacentHTML to see all the methods.
   });
 };
+// console.log(containerMovements.innerHTML); just to show the generated html.
 displayMovements(account1.movements);
 
-// console.log(containerMovements.innerHTML); just to show the generated html.
+// 148 Computing Usernames.mp4
+
+// const user = 'Steven Thomas Williams'; // username should be stw
+
+// 1st
+// const username = user.toLowerCase().split(' ');
+// console.log(username);
+
+// 2nd
+// const username = user
+//   .toLowerCase()
+//   .split(' ')
+//   .map(function (name) {
+//     return name[0];
+//   });
+// console.log(username);
+
+// 3rd
+// const username = user
+//   .toLowerCase()
+//   .split(' ')
+//   .map(function (name) {
+//     return name[0];
+//   })
+//   .join('');
+// console.log(username);
+
+// Refactoring...
+// const username = user
+//   .toLowerCase()
+//   .split(' ')
+//   .map(name => name[0])
+//   .join('');
+// console.log(username);
+
+// Putting inside a function...
+
+// const createUsernames = function (user) {
+//   const username = user
+//     .toLowerCase()
+//     .split(' ')
+//     .map(name => name[0])
+//     .join('');
+//   return username;
+// };
+// console.log(createUsernames('Steven Thomas Williams'));
+
+// Now to compute the names of each account at accounts array, should we
+// use map or forEach method? In this case we do not want to create a new array
+// We want to modify the objects, so we will use forEach.
+
+const createUsernames = function (accs) {
+  //accountS
+  accs.forEach(function (acc) {
+    // each acount
+    acc.username = acc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(name => name[0])
+      .join('');
+  });
+};
+createUsernames(accounts);
+console.log(accounts); // now we have a new object username.
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -310,7 +372,7 @@ all the elements. The array [2,3,4] would return 2+3+4=9 if the operation define
 */
 
 // 147 The map Method.mp4
-
+/*
 const euroToUsd = 1.1;
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
@@ -361,3 +423,5 @@ console.log(movementsDescription);
 // With the map method we returned each of the strings from the callback function, basically
 // they got added to a new array., and then finally we logged the entire array and not the elements
 // one by one, we not created side effects at each iteration.
+
+*/
