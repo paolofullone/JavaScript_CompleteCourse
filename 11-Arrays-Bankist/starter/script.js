@@ -299,7 +299,8 @@ GOOD LUCK 😀
 // Map, filter and reduce.
 /* 
 Map is a method to perform a task in all items of the array and it returns a new array
-containing the result of the task, like all items * 2.
+containing the result of the task, like all items * 2. In forEach it returns the same array
+Map returns a new one.
 
 Filter returns a new array with all the items that returned true to a given condition, 
 like item > 2.
@@ -307,3 +308,56 @@ like item > 2.
 Reduce reduces the elements of an array to one value using a accumulator, like a snowball it can sum up 
 all the elements. The array [2,3,4] would return 2+3+4=9 if the operation defined is a sum.
 */
+
+// 147 The map Method.mp4
+
+const euroToUsd = 1.1;
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+
+const movementsUSD = movements.map(function (mov) {
+  return mov * euroToUsd;
+});
+console.log('---Using map, the original array remains untouched.---');
+console.log(`Original: ${movements}`);
+console.log(`New returned array: ${movementsUSD}`);
+
+// Using a for loop to do the same.
+const movementsUSDfor = [];
+for (const mov of movements) movementsUSDfor.push(mov * euroToUsd);
+
+console.log(`Using for loop: ${movementsUSDfor}`);
+
+// The map method is much more aligned with functional programming, which is a modern
+// direction of modern JS.
+
+// Some people say that the readability of arrow function is worst because it misses
+// the 'function' and 'return' statemens, however the code is cleaner and indeed it is a
+// function that returns a result.
+
+const movementsUSDArrow = movements.map(mov => mov * euroToUsd);
+console.log(`Using arrow function: ${movementsUSDArrow}`);
+
+console.log(movementsUSDArrow);
+console.log([movementsUSDArrow]);
+
+// Returning an array with all the movements.
+
+const movementsDescription = movements.map(
+  (mov, i) =>
+    `Movement ${i + 1} You ${mov > 0 ? 'deposited' : 'withdrew'} ${Math.abs(
+      mov
+    )}`
+);
+
+console.log(movementsDescription);
+
+// So we can see that is completely acceptable to have 2 returns or more in the same
+// function, as long as only 1 is executed.
+
+// The result on screen of the map and the forEach is similar, but there's a BIG difference
+// between them, on the forEach we printed each line individually to the console as they were looping
+// over the array. Each iteration generates an action that was then visible to the console.
+// We can call this side effect. So the forEach method creates side effects.
+// With the map method we returned each of the strings from the callback function, basically
+// they got added to a new array., and then finally we logged the entire array and not the elements
+// one by one, we not created side effects at each iteration.
