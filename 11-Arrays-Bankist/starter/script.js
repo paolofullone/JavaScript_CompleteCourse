@@ -64,7 +64,7 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-// 144 Creating DOM Elements.mp4
+//? 144 Creating DOM Elements.mp4
 const displayMovements = function (movements) {
   containerMovements.innerHTML = ''; // this line emptys the container, we had 2 movements there by default.
   movements.forEach(function (mov, i) {
@@ -84,11 +84,39 @@ displayMovements(account1.movements);
 // The labelBalance was already selected, just inspect the balance element.
 const calcDisplayBalance = function (movements) {
   const balance = movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance} EUR`;
+  labelBalance.textContent = `${balance}€`;
 };
 calcDisplayBalance(account1.movements);
 // Note that again we are callling it with account 1 data and later on we will take care of that.
 // Just like we did with displayMovements.
+
+// Sumary of incomes.
+const calcDisplaySummary = function (movements) {
+  const incomes = movements
+    .filter(mov => mov > 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumIn.textContent = `${incomes}€`;
+
+  const outcomes = movements
+    .filter(mov => mov < 0)
+    .reduce((acc, mov) => acc + mov, 0);
+  labelSumOut.textContent = `${Math.abs(outcomes)}€`;
+
+  // lets say that the bank pays 1.2% of each amount deposited. The amount must be
+  // above 1 euro.
+  const interest = movements
+    .filter(mov => mov > 0)
+    .map(deposit => (deposit * 1.2) / 100)
+    .filter((int, i, arr) => {
+      // just values above 1 euro gets interest
+      console.log(arr);
+      return int >= 1;
+    })
+    .reduce((acc, interest) => acc + interest, 0);
+  labelSumInterest.textContent = `${interest}€`;
+};
+
+calcDisplaySummary(account1.movements);
 
 // Creating the usernames.
 const createUsernames = function (accs) {
@@ -104,7 +132,7 @@ const createUsernames = function (accs) {
 };
 createUsernames(accounts);
 
-// 148 Computing Usernames.mp4
+//? 148 Computing Usernames.mp4
 /*
 // const user = 'Steven Thomas Williams'; // username should be stw
 
@@ -171,10 +199,10 @@ console.log(accounts); // now we have a new object username.
 */
 // End of 148
 
-// 149 The filter Method
-/*
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+//? 149 The filter Method
 
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+/*
 // Deposits
 const deposits = movements.filter(function (mov, i, arr) {
   return mov > 0;
@@ -217,7 +245,7 @@ console.log(depositsFor);
 
 /////////////////////////////////////////////////
 
-// 140 Simple Array Methods
+//? 140 Simple Array Methods
 /*
 let arr = ['a', 'b', 'c', 'd', 'e'];
 
@@ -274,7 +302,7 @@ console.log(letters.join('-'));
 // no need to know everything by heart.
 */
 
-// 141 Looping Arrays_ forEach.mp4
+//? 141 Looping Arrays_ forEach.mp4
 /*
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
@@ -310,7 +338,7 @@ movements.forEach(function (mov, i, arr) {
 // untill the end of the array...
 */
 
-// 142 forEach With Maps and Sets.mp4
+//? 142 forEach With Maps and Sets.mp4
 /*
 // Map
 const currencies = new Map([
@@ -344,10 +372,10 @@ currenciesUnique.forEach(function (value, key, map) {
 // It is a convention to name the key of _, in JS the _ is a unnecessary variable.
 */
 
-// 143 PROJECT_ _Bankist_ App.mp4
+//? 143 PROJECT_ _Bankist_ App.mp4
 // project overview
 
-// 145 Coding Challenge #1.mp4
+//? 145 Coding Challenge #1.mp4
 ///////////////////////////////////////
 // Coding Challenge #1
 
@@ -428,7 +456,7 @@ Reduce reduces the elements of an array to one value using a accumulator, like a
 all the elements. The array [2,3,4] would return 2+3+4=9 if the operation defined is a sum.
 */
 
-// 147 The map Method.mp4
+//? 147 The map Method.mp4
 /*
 const euroToUsd = 1.1;
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
@@ -483,8 +511,8 @@ console.log(movementsDescription);
 
 */
 
-// 150 The reduce Method.mp4
-
+//? 150 The reduce Method.mp4
+/*
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 console.log(movements);
 
@@ -519,3 +547,172 @@ const max = movements.reduce((acc, mov) => {
   else return mov;
 }, movements[0]); // important to notice, we shouldn't put always 0 here. If the 1st value of the array is different then 0 could jeopardize the entire calculation.
 console.log(max);
+*/
+
+//? 151 Coding Challenge #2.mp4
+
+///////////////////////////////////////
+// Coding Challenge #2
+
+/* 
+Let's go back to Julia and Kate's study about dogs. This time, they want to convert dog
+ages to human ages and calculate the average age of the dogs in their study.
+
+Create a function 'calcAverageHumanAge', which accepts an arrays of dog's ages ('ages'),
+and does the following things in order:
+
+1. Calculate the dog age in human years using the following formula: if the dog is <= 2
+years old, humanAge = 2 * dogAge. If the dog is > 2 years old, 
+humanAge = 16 + dogAge * 4.
+2. Exclude all dogs that are less than 18 human years old (which is the same as 
+keeping dogs that are at least 18 years old)
+3. Calculate the average human age of all adult dogs (you should already know from 
+other challenges how we calculate averages 😉)
+4. Run the function for both test datasets
+
+TEST DATA 1: [5, 2, 4, 1, 15, 8, 3]
+TEST DATA 2: [16, 6, 10, 5, 6, 1, 4]
+
+GOOD LUCK 😀
+
+
+const ages = [5, 2, 4, 1, 15, 8, 3];
+
+// 1
+// const humanAges = ages.map(function (age) {
+//   const dogAge = age <= 2 ? age * 2 : 16 + age * 4;
+//   return dogAge;
+// });
+// console.log(humanAges);
+
+// 2
+// const humanAges = ages
+//   .map(function (age) {
+//     const dogAge = age <= 2 ? age * 2 : 16 + age * 4;
+//     return dogAge;
+//   })
+//   .filter(function (humanAge) {
+//     return humanAge > 18;
+//   });
+// console.log(humanAges);
+
+// 3
+
+// const humanAges = ages
+//   .map(function (age) {
+//     const dogAge = age <= 2 ? age * 2 : 16 + age * 4;
+//     return dogAge;
+//   })
+//   .filter(function (humanAge) {
+//     return humanAge > 18;
+//   })
+//   .reduce(function (acc, curr) {
+//     return acc + curr;
+//   }, 0);
+
+// console.log(humanAges);
+
+// const humanAges = ages
+//   .map(function (age) {
+//     const dogAge = age <= 2 ? age * 2 : 16 + age * 4;
+//     return dogAge;
+//   })
+//   .filter(humanAge => humanAge > 18)
+//   .reduce(function (acc, curr) {
+//     return acc + curr;
+//   }, 0);
+
+// console.log(humanAges);
+//1
+// const calcAverageHumanAge = function (ages) {
+//   const humanAges = ages.map(age => (age <= 2 ? 2 * age : 16 + age * 4));
+//   console.log(humanAges);
+// };
+
+// calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
+
+//2
+// const calcAverageHumanAge = function (ages) {
+//   const humanAges = ages.map(age => (age <= 2 ? 2 * age : 16 + age * 4));
+//   const adultDogs = humanAges.filter(age => age >= 18);
+//   console.log(humanAges, adultDogs);
+// };
+
+// calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
+
+//3
+const calcAverageHumanAge = function (ages) {
+  const humanAges = ages.map(age => (age <= 2 ? 2 * age : 16 + age * 4));
+  const adultDogs = humanAges.filter(age => age >= 18);
+  const average =
+    adultDogs.reduce((acc, age) => acc + age, 0) / adultDogs.length;
+  // console.log(humanAges);
+  // console.log(adultDogs);
+  // console.log(average);
+  return average;
+};
+
+const avg1 = calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
+const avg2 = calcAverageHumanAge([16, 6, 10, 5, 6, 1, 4]);
+
+console.log(avg1, avg2);
+
+// Another way of calculating the average:
+// const calcAverageHumanAge = function (ages) {
+//   const humanAges = ages.map(age => (age <= 2 ? 2 * age : 16 + age * 4));
+//   const adultDogs = humanAges.filter(age => age >= 18);
+//   const average = adultDogs.reduce(
+//     (acc, age, i, arr) => acc + age / arr.length, // instead of / in the end, we divided
+//     0                                             // each element by the length of the
+//   );                                              // array. Good use case for the arr parameter.
+//   // console.log(humanAges);
+//   // console.log(adultDogs);
+//   // console.log(average);
+//   return average;
+// };
+
+// const avg1 = calcAverageHumanAge([5, 2, 4, 1, 15, 8, 3]);
+// const avg2 = calcAverageHumanAge([16, 6, 10, 5, 6, 1, 4]);
+
+// console.log(avg1, avg2);
+*/
+
+//? 152 The Magic of Chaining Methods.mp4
+/*
+// take all movements deposits, convert from eur to usd, and then sum them up
+const euroToUsd = 1.1;
+console.log(movements);
+
+// PIPELINE
+const totalDepositsUSD = movements
+  .filter(mov => mov > 0)
+  .map(mov => mov * euroToUsd)
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(totalDepositsUSD);
+
+// Can be hard to debug if we have a mistake. Let's say we wrogngly
+// selected mov < 0 instead of mov > 0, the debug would be:
+
+// const totalDepositsUSD = movements
+//   .filter(mov => mov < 0)
+//   // .map(mov => mov * euroToUsd)
+//   .map((mov, i, arr) => {
+//     console.log(arr);
+//     return mov * euroToUsd;
+//   })
+//   .reduce((acc, mov) => acc + mov, 0);
+// console.log(totalDepositsUSD);
+
+//* So basically we can check the current array in the next chain method.
+
+// Now let's calculate the Summary of the account.
+
+//* Chaining can cause perfromance issues in huge arrays, that can be true with map methods
+//* sometimes we create way more map methods than we need, because it would be possible
+//* to do all in one map call.
+
+//! It is bad practice in JS chain methods that mutate the original array. Like the splice method.
+//! Usually we shouldn't chain splice, reverse etc...
+
+//* In large scale applications it's usually a good practice to avoid mutating arrays.
+*/
