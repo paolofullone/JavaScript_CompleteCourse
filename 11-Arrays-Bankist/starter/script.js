@@ -78,8 +78,31 @@ const displayMovements = function (movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html); // google mdn insertAdjacentHTML to see all the methods.
   });
 };
-// console.log(containerMovements.innerHTML); just to show the generated html.
 displayMovements(account1.movements);
+
+// Calculating and displaying balance
+// The labelBalance was already selected, just inspect the balance element.
+const calcDisplayBalance = function (movements) {
+  const balance = movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${balance} EUR`;
+};
+calcDisplayBalance(account1.movements);
+// Note that again we are callling it with account 1 data and later on we will take care of that.
+// Just like we did with displayMovements.
+
+// Creating the usernames.
+const createUsernames = function (accs) {
+  //accountS
+  accs.forEach(function (acc) {
+    // each acount
+    acc.username = acc.owner
+      .toLowerCase()
+      .split(' ')
+      .map(name => name[0])
+      .join('');
+  });
+};
+createUsernames(accounts);
 
 // 148 Computing Usernames.mp4
 /*
@@ -149,21 +172,36 @@ console.log(accounts); // now we have a new object username.
 // End of 148
 
 // 149 The filter Method
+/*
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
 
-const deposits = movements.filter(function (mov) {
+// Deposits
+const deposits = movements.filter(function (mov, i, arr) {
   return mov > 0;
 });
+// The filter method also has access to index and array, but Jonas never used it in his life. :)
+
 console.log(movements);
 console.log(deposits); // only the positive values.
+
+// Withdraws
+const withdraws = movements.filter(mov => mov < 0);
+// const withdraws = movements.filter(mov => RETURN mov < 0);
+// The arrow function works because it is like we had the return written like this.
+
+console.log(movements);
+console.log(withdraws); // only the negative values.
 
 // Same result with a for loop.
 const depositsFor = [];
 for (const mov of movements) if (mov > 0) depositsFor.push(mov);
 console.log(depositsFor);
 
-// When we use the methods we can chain the methods, which is impossible with the
-// for loop
+// When we use the methods we can chain the methods together, which is impossible with the
+// for loop. Latter on we will make some big chain array methods.
+
+// End of 149
+*/
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -444,3 +482,40 @@ console.log(movementsDescription);
 // one by one, we not created side effects at each iteration.
 
 */
+
+// 150 The reduce Method.mp4
+
+const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
+console.log(movements);
+
+// // Accumulator is like the SNOWBALL
+// const balance = movements.reduce(function (acc, curr, i, arr) {
+//   //accumulattor, current, index, array
+//   console.log(`Iteration number ${i}: ${acc}`);
+//   return acc + curr;
+// }, 0);
+// console.log(balance);
+
+// Rewritting in Arrow Function - Accumulator is like the SNOWBALL
+const balance = movements.reduce((acc, curr) => acc + curr, 0);
+console.log(balance);
+
+// The callback function:
+// (function (acc, curr, i, arr) {return acc + curr};
+// is the FIRST parameter of the REDUCE method, and it actually has a second parameter.
+// That is the initial value of the accumulator.
+// }, 0); // this is the part where we specify the initial value of the accumulator.
+
+// It could be done like this:
+let balance2 = 0;
+for (const mov of movements) balance2 += mov;
+console.log(balance2);
+// But then a 2nd variable would be necessary.
+
+// Maximum value of the array using reduce method.
+const max = movements.reduce((acc, mov) => {
+  if (acc > mov) return acc;
+  // if the accumulator is bigger, return it, otherwise return the movement
+  else return mov;
+}, movements[0]); // important to notice, we shouldn't put always 0 here. If the 1st value of the array is different then 0 could jeopardize the entire calculation.
+console.log(max);
