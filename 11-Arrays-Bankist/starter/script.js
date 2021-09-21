@@ -730,7 +730,7 @@ TEST DATA 2: [16, 6, 10, 5, 6, 1, 4]
 
 GOOD LUCK 😀
 */
-
+/*
 const calcAverageHumanAge = function (ages) {
   const humanAges = ages.map(age => (age <= 2 ? 2 * age : 16 + age * 4));
   const adultDogs = humanAges.filter(age => age >= 18);
@@ -761,3 +761,33 @@ console.log(avgArrow1, avgArrow2);
 //* immediately. In the other example we divided the sum of all elements by adults.length.
 //* Since here we are not storing the array, we have to do in this second way. Using
 //* the arr.length used in reduce method.
+*/
+
+//? 154 The find Method.mp4
+
+// The find method will return the first element of the array that satisfies the condition.
+// The filter method, returns a NEW array with ALL the elements that satisfies the conditions stated.
+
+const firstWithdrawl = movements.find(mov => mov < 0);
+console.log(movements);
+console.log(firstWithdrawl);
+
+//* Filter returns all the elements, find only returns the 1st one to satisfy the condition
+//* Filter method returns a NEW array, find only returns the element itself.
+
+// Let's start to work with the accounts array.
+console.log(accounts);
+
+// Search for Jessica Davis account complete info:
+const account = accounts.find(acc => (acc.owner = 'Jessica Davis'));
+console.log(account);
+
+//* We use the find method when we want to find the only element that satisfies
+//* the given condition.
+
+for (const accountFor of accounts) {
+  if ((accountFor.owner = 'Jessica Davis')) {
+    console.log(`same with for for loop:`);
+    console.log(accountFor);
+  }
+}
