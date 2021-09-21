@@ -78,7 +78,7 @@ const displayMovements = function (movements) {
     containerMovements.insertAdjacentHTML('afterbegin', html); // google mdn insertAdjacentHTML to see all the methods.
   });
 };
-displayMovements(account1.movements);
+// displayMovements(account1.movements);
 
 // Calculating and displaying balance
 // The labelBalance was already selected, just inspect the balance element.
@@ -86,27 +86,27 @@ const calcDisplayBalance = function (movements) {
   const balance = movements.reduce((acc, mov) => acc + mov, 0);
   labelBalance.textContent = `${balance}€`;
 };
-calcDisplayBalance(account1.movements);
+// calcDisplayBalance(account1.movements);
 // Note that again we are callling it with account 1 data and later on we will take care of that.
 // Just like we did with displayMovements.
 
 // Sumary of incomes.
-const calcDisplaySummary = function (movements) {
-  const incomes = movements
+const calcDisplaySummary = function (acc) {
+  const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumIn.textContent = `${incomes}€`;
 
-  const outcomes = movements
+  const outcomes = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
   labelSumOut.textContent = `${Math.abs(outcomes)}€`;
 
   // lets say that the bank pays 1.2% of each amount deposited. The amount must be
   // above 1 euro.
-  const interest = movements
+  const interest = acc.movements
     .filter(mov => mov > 0)
-    .map(deposit => (deposit * 1.2) / 100)
+    .map(deposit => (deposit * acc.interestRate) / 100)
     .filter((int, i, arr) => {
       // just values above 1 euro gets interest
       // console.log(arr);
@@ -116,7 +116,7 @@ const calcDisplaySummary = function (movements) {
   labelSumInterest.textContent = `${interest}€`;
 };
 
-calcDisplaySummary(account1.movements);
+// calcDisplaySummary(account1.movements);
 
 // Creating the usernames.
 const createUsernames = function (accs) {
@@ -131,6 +131,47 @@ const createUsernames = function (accs) {
   });
 };
 createUsernames(accounts);
+
+//? 155 Implementing Login
+// Event handler
+// Since this is a button in a form element, the page shows 'login' and quickly reload,
+// this is the default behavior of a submit button in html.
+
+let currentAccount;
+
+btnLogin.addEventListener('click', function (e) {
+  // this will prevent the form from submitting.
+  e.preventDefault();
+  //  console.log('login'); // any enter in USER or PIN forms will trigger the login.
+  // checking the user
+  currentAccount = accounts.find(
+    acc => acc.username === inputLoginUsername.value
+  );
+  console.log(currentAccount);
+  // checking the pin
+  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+    //console.log('login');
+    //if we type a user that is not in the accounts, it will return error undefined. Added the ? in the currentAccount?.pin
+    // display UI and message
+    labelWelcome.textContent = `Welcome back, ${
+      currentAccount.owner.split(' ')[0]
+    }`;
+    containerApp.style.opacity = 100; // with the correct login the opacity returns to 100 and the
+    // elements are now visible.
+
+    // Clear the input fields as sucessifully login
+    inputLoginUsername.value = inputLoginPin.value = '';
+    // Looses the focus of Login field as logs in.
+    inputLoginPin.blur();
+
+    // display movements
+    displayMovements(currentAccount.movements);
+    // display balance
+    calcDisplayBalance(currentAccount.movements);
+    // display summary
+    calcDisplaySummary(currentAccount);
+  }
+});
 
 //? 148 Computing Usernames.mp4
 /*
@@ -764,7 +805,7 @@ console.log(avgArrow1, avgArrow2);
 */
 
 //? 154 The find Method.mp4
-
+/*
 // The find method will return the first element of the array that satisfies the condition.
 // The filter method, returns a NEW array with ALL the elements that satisfies the conditions stated.
 
@@ -791,3 +832,6 @@ for (const accountFor of accounts) {
     console.log(accountFor);
   }
 }
+*/
+
+// 155 Implementing Login
