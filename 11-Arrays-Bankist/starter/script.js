@@ -785,6 +785,7 @@ console.log(account);
 //* We use the find method when we want to find the only element that satisfies
 //* the given condition.
 
+// Small Challenge - Do the same with for loop.
 for (const accountFor of accounts) {
   if ((accountFor.owner = 'Jessica Davis')) {
     console.log(`same with for for loop:`);
