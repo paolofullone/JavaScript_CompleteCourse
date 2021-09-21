@@ -82,9 +82,9 @@ const displayMovements = function (movements) {
 
 // Calculating and displaying balance
 // The labelBalance was already selected, just inspect the balance element.
-const calcDisplayBalance = function (movements) {
-  const balance = movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${balance}€`;
+const calcDisplayBalance = function (acc) {
+  acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
+  labelBalance.textContent = `${acc.balance}€`;
 };
 // calcDisplayBalance(account1.movements);
 // Note that again we are callling it with account 1 data and later on we will take care of that.
@@ -132,6 +132,17 @@ const createUsernames = function (accs) {
 };
 createUsernames(accounts);
 
+const updateUI = function (acc) {
+  // display movements
+  displayMovements(acc.movements);
+
+  // display balance
+  calcDisplayBalance(acc);
+
+  // display summary
+  calcDisplaySummary(acc);
+};
+
 //? 155 Implementing Login
 // Event handler
 // Since this is a button in a form element, the page shows 'login' and quickly reload,
@@ -140,6 +151,7 @@ createUsernames(accounts);
 let currentAccount;
 
 btnLogin.addEventListener('click', function (e) {
+  // e stands for event.
   // this will prevent the form from submitting.
   e.preventDefault();
   //  console.log('login'); // any enter in USER or PIN forms will trigger the login.
@@ -163,15 +175,40 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.value = inputLoginPin.value = '';
     // Looses the focus of Login field as logs in.
     inputLoginPin.blur();
-
-    // display movements
-    displayMovements(currentAccount.movements);
-    // display balance
-    calcDisplayBalance(currentAccount.movements);
-    // display summary
-    calcDisplaySummary(currentAccount);
   }
 });
+
+// 156 - Implementing Transfers
+btnTransfer.addEventListener('click', function (e) {
+  e.preventDefault(); // avoid automatically reload, pretty common.
+  const amount = Number(inputTransferAmount.value);
+  const receiverAcc = accounts.find(
+    acc => acc.username === inputTransferTo.value
+  );
+  // console.log(amount, receiverAcc);
+  inputTransferAmount.value = inputTransferTo.value = '';
+
+  if (
+    amount > 0 && // amount greater than 0
+    receiverAcc && // receiver acc must be valid
+    currentAccount.balance > amount && // balance greather than transfer amount
+    receiverAcc?.username !== currentAccount.username // can't transfer to myself and receiverAcc? must exist.
+  ) {
+    // with this cl we tested if the transfer was valid, and found a bug.
+    // and included the receiverAcc to chek if the receiver account exists.
+    // console.log('transfer valid');
+  }
+  // Doing the transfer.
+  currentAccount.movements.push(-amount);
+  receiverAcc.movements.push(amount);
+
+  // Update UI
+  updateUI(currentAccount);
+});
+
+inputLoginUsername.value = 'js';
+inputLoginPin.value = 1111;
+btnLogin.click();
 
 //? 148 Computing Usernames.mp4
 /*
