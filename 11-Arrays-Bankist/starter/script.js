@@ -209,6 +209,29 @@ btnTransfer.addEventListener('click', function (e) {
   }
 });
 
+//? 158 - some and every
+// Request Loan
+// The bank only grant the loan if we have at least one deposit with 10% of the requested amount.
+
+btnLoan.addEventListener('click', function (e) {
+  e.preventDefault();
+
+  const amount = Number(inputLoanAmount.value);
+
+  if (amount > 0 && currentAccount.movements.some(mov => mov >= 0.1 * amount)) {
+    // Add movement
+    currentAccount.movements.push(amount);
+
+    // Update UI
+    updateUI(currentAccount);
+  }
+  // Clear the field value
+  inputLoanAmount.value = '';
+});
+
+// since this is a very simple program, we could request 10, 100, 1000, 10000, 100000...
+// because every time the previous loan will grant the next one 10 times bigger.
+
 //? 157 The findIndex Method.mp4
 // Very similar to find, but returns the index instead of the item of the array.
 // A good use case is for the Close account, in this application it is basically to delete the account
@@ -910,4 +933,40 @@ for (const accountFor of accounts) {
 }
 */
 
-// 155 Implementing Login
+//? 158 some and every.mp4
+
+// Testing for EQUALITY
+console.log(movements);
+console.log(movements.includes(-130));
+
+// Testing for a CONDITION
+// Is there any deposit in the account?
+// const anyDeposits = movements.some(mov => mov > 0);
+// console.log(anyDeposits);
+
+// SOME: CONDITION
+// Is there any deposit above 500 in the account?
+const anyDeposits = movements.some(mov => mov > 500);
+console.log(anyDeposits);
+
+// In the first method it tests for equality, in the second it tests for a condition.
+
+// This also works
+console.log(movements.some(mov => mov === -130));
+// But doesn't make much sense, includes is easier.
+
+// EVERY
+// Only returns true if all the elements on the array satisfies the condition.
+
+// Check if all the movements are positive.
+console.log(movements.every(mov => mov > 0));
+
+//on account 4 this is true. This account has only deposits.
+console.log(account4.movements.every(mov => mov > 0));
+
+// Separate callback
+console.log('Calling with a function');
+const deposit = mov => mov > 0;
+console.log(movements.some(deposit));
+console.log(movements.every(deposit));
+console.log(movements.filter(deposit));
