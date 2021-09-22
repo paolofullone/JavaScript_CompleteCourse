@@ -159,7 +159,7 @@ btnLogin.addEventListener('click', function (e) {
   currentAccount = accounts.find(
     acc => acc.username === inputLoginUsername.value
   );
-  console.log(currentAccount);
+  // console.log(currentAccount);
   // checking the pin
   if (currentAccount?.pin === Number(inputLoginPin.value)) {
     //console.log('login');
@@ -175,10 +175,13 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.value = inputLoginPin.value = '';
     // Looses the focus of Login field as logs in.
     inputLoginPin.blur();
+
+    // Update UI
+    updateUI(currentAccount);
   }
 });
 
-// 156 - Implementing Transfers
+//? 156 - Implementing Transfers
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault(); // avoid automatically reload, pretty common.
   const amount = Number(inputTransferAmount.value);
@@ -197,13 +200,48 @@ btnTransfer.addEventListener('click', function (e) {
     // with this cl we tested if the transfer was valid, and found a bug.
     // and included the receiverAcc to chek if the receiver account exists.
     // console.log('transfer valid');
-  }
-  // Doing the transfer.
-  currentAccount.movements.push(-amount);
-  receiverAcc.movements.push(amount);
+    // Doing the transfer.
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
 
-  // Update UI
-  updateUI(currentAccount);
+    // Update UI
+    updateUI(currentAccount);
+  }
+});
+
+//? 157 The findIndex Method.mp4
+// Very similar to find, but returns the index instead of the item of the array.
+// A good use case is for the Close account, in this application it is basically to delete the account
+// from the accounts array.
+
+// Both find and findIndex gets access to index and the entire array also. JS never found
+// a use case for that. They were also introduced in ES6, so will not work in super old browsers.
+
+btnClose.addEventListener('click', function (e) {
+  e.preventDefault();
+  // console.log('delete');
+
+  if (
+    inputCloseUsername.value === currentAccount.username &&
+    Number(inputClosePin.value) === currentAccount.pin
+  ) {
+    const index = accounts.findIndex(
+      acc => acc.username === currentAccount.username
+    );
+    //indexOf(some value) will search if the value exists or not, the findIndex method
+    // allows us to create a more complex expression like we did above.
+    console.log(index);
+
+    // Delete account
+    accounts.splice(index, 1); // this will delete the index item in the acounts array.
+
+    // Hide UI
+    containerApp.style.opacity = 0;
+
+    // if we type accounts in the console now, we will see that we have only 3 arrays
+    // and the jonas object is no longer there.
+  }
+  inputCloseUsername.value = inputClosePin.value = '';
 });
 
 inputLoginUsername.value = 'js';
