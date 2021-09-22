@@ -1033,7 +1033,7 @@ console.log(overallBallance);
 */
 
 // 160 Sorting Arrays.mp4
-
+/*
 // Strings
 const owners = ['Jonas', 'Zach', 'Adam', 'Matha'];
 console.log(owners.sort());
@@ -1075,3 +1075,68 @@ console.log(movements);
 // A mixed array with strings and numbers will not work!!!
 
 // https://medium.com/coding-at-dawn/how-to-sort-an-array-numerically-in-javascript-2b22710e3958#:~:text=sort((a%2Cb)%3D,sorting%20by%20using%20the%20syntax%20%5B%E2%80%A6
+*/
+
+//? 161 More Ways of Creating and Filling Arrays.mp4
+
+// We've been doing this:
+const arr = [1, 2, 3, 4, 5, 6, 7];
+console.log(new Array(1, 2, 3, 4, 5, 6, 7));
+
+// Empty arrays with fill method.
+// Now if we do:
+const x = new Array(7);
+console.log(x);
+// This generates a empty array with a length of 7
+
+// but we can call the fill method.
+x.fill(1, 3, 5); // we can specify wich element will fill the array
+// and where it will begin and end filling
+console.log(x); // This MUTTES the array.
+
+x.fill(1); // if we leave it empty, it will fill everything.
+console.log(x); // This MUTTES the array.
+
+console.log(arr);
+arr.fill(23, 2, 6);
+console.log(arr);
+
+// Creating the length 7 array in one line
+const y = Array.from({ length: 7 }, () => 1);
+console.log(y);
+// So we have to pass the length of the array, then a arrow function
+// without arguments returning 1. could be regular function as well.
+
+// const z = Array.from({ length: 7 }, (curr, i) => i + 1);
+const z = Array.from({ length: 7 }, (_, i) => i + 1);
+console.log(z);
+// so, to access the index, we need the 'current', since we will not use it, we can
+// set it to _, to state to other programmers we don't need this parameter.
+
+// exercise of 100 random dice rolls
+// const diceRolls = Array.from({ length: 100 }, () =>
+//   Math.floor(Math.random() * 6 + 1)
+// );
+// console.log(diceRolls);
+
+// Now let's pretend we only have the values of the movements array stored
+// in the User Interface, not in an array.
+
+// in order to get all movements after login, we have to attach it to an element
+// of the page, let's do when we click on the balance text.
+labelBalance.addEventListener('click', function () {
+  const movementsUI = Array.from(
+    document.querySelectorAll('.movements__value'),
+    el => Number(el.textContent.replace('€', ''))
+  );
+  console.log(movementsUI);
+
+  // we could grab the elements of movements value using spread operator
+  // but then we have to do the mapping separately, so the 1st approach is cleanner.
+  // const movemensUI2 = [...document.querySelectorAll('.movements__value')];
+  // console.log(movemensUI2);
+});
+// The querySelector is a NodeList that looks like and array, but it's not really an array.
+// Thats why we encapsulated it in a Array.from, creating an array.
+// Then we used the 2nd argument of Array.from using an arrow functin to
+// replace the euro sign to nothing.
