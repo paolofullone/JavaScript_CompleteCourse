@@ -64,10 +64,18 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-//? 144 Creating DOM Elements.mp4
-const displayMovements = function (movements) {
+//? 144 Creating DOM Elements.mp4 && 160 Sorting Arrays.mp4
+
+const displayMovements = function (movements, sort = false) {
   containerMovements.innerHTML = ''; // this line emptys the container, we had 2 movements there by default.
-  movements.forEach(function (mov, i) {
+
+  // if sort is set to true, we will sort a copy of movements (using slice to copy), if set
+  // to false, we will return to movements orignal.
+  // We will add a event listener in the end of the code with the sortBtn setting
+  // sort to true when clicked.
+  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+
+  movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
 
     const html = `
@@ -267,6 +275,18 @@ btnClose.addEventListener('click', function (e) {
   inputCloseUsername.value = inputClosePin.value = '';
 });
 
+//? 160 - sorting
+let sorted = false;
+
+btnSort.addEventListener('click', function (e) {
+  e.preventDefault();
+  displayMovements(currentAccount.movements, !sorted);
+  sorted = !sorted; // inverting from true to false or false to true.
+});
+// So here we set the sorted variable to false, and each time the button is clicked
+// it's value change from false to true or true to false.
+
+///////////////
 inputLoginUsername.value = 'js';
 inputLoginPin.value = 1111;
 btnLogin.click();
@@ -973,7 +993,7 @@ console.log(movements.filter(deposit));
 */
 
 //? 159 flat and flatMap.mp4
-
+/*
 const arr = [[1, 2, 3], [4, 5, 6], 7, 8];
 console.log(arr.flat());
 
@@ -1010,3 +1030,48 @@ console.log(overallBallance);
 
 // flatMap only goes 1 level deep and we cannot change it.
 // If more than 1 level needed, gotta go with flat.
+*/
+
+// 160 Sorting Arrays.mp4
+
+// Strings
+const owners = ['Jonas', 'Zach', 'Adam', 'Matha'];
+console.log(owners.sort());
+//* This method MUTATES the array.
+console.log(owners);
+
+// Numbers
+console.log(movements);
+// console.log(movements.sort());
+// Doesn't make much sense, because it converts everything to strings and sort
+// If we look it like that, it makes more sense, the - will always come first.
+// Then one, two, three, four, seven...
+
+// if return <0, A comes before B (keep order)
+// if return >0, B comes before A (swith order)
+
+// Ascending
+// movements.sort((a, b) => {
+//   if (a > b) return 1;
+//   if (a < b) return -1;
+// });
+// console.log(movements);
+
+// so, if a is bigger than b, a-b will always returns something positive
+// if a is smaller than b, a-b will always returns something negative
+movements.sort((a, b) => a - b);
+console.log(movements);
+
+// Descending
+// movements.sort((a, b) => {
+//   if (a > b) return -1;
+//   if (a < b) return 1;
+// });
+// console.log(movements);
+
+movements.sort((a, b) => b - a);
+console.log(movements);
+
+// A mixed array with strings and numbers will not work!!!
+
+// https://medium.com/coding-at-dawn/how-to-sort-an-array-numerically-in-javascript-2b22710e3958#:~:text=sort((a%2Cb)%3D,sorting%20by%20using%20the%20syntax%20%5B%E2%80%A6
