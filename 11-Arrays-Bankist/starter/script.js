@@ -934,7 +934,7 @@ for (const accountFor of accounts) {
 */
 
 //? 158 some and every.mp4
-
+/*
 // Testing for EQUALITY
 console.log(movements);
 console.log(movements.includes(-130));
@@ -970,3 +970,43 @@ const deposit = mov => mov > 0;
 console.log(movements.some(deposit));
 console.log(movements.every(deposit));
 console.log(movements.filter(deposit));
+*/
+
+//? 159 flat and flatMap.mp4
+
+const arr = [[1, 2, 3], [4, 5, 6], 7, 8];
+console.log(arr.flat());
+
+const arrDeep = [[[1, 2], 3], [4, 5, 6], 7, 8];
+console.log(arrDeep.flat()); // This returns still a nested array
+// So the flat method goes one level deep.
+
+console.log(arrDeep.flat(2));
+// The 2 indicates we go 2 level nested.
+
+// If the bank wants to calculate the overall balance of all movements of all accounts.
+
+// This is how we built it...
+// const accountMovements = accounts.map(acc => acc.movements);
+// console.log(accountMovements);
+// const allMovements = accountMovements.flat();
+// console.log(allMovements);
+// const overalBallanceSeparate = allMovements.reduce((acc, mov) => acc + mov, 0);
+// console.log(overalBallanceSeparate);
+
+// And chainned...
+const overallBallance = accounts
+  .map(acc => acc.movements)
+  .flat()
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(overallBallance);
+
+// It's pretty common to use a map and then flat, so we have a flatmap function.
+// flatMap
+const overallBallance2 = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((acc, mov) => acc + mov, 0);
+console.log(overallBallance);
+
+// flatMap only goes 1 level deep and we cannot change it.
+// If more than 1 level needed, gotta go with flat.
