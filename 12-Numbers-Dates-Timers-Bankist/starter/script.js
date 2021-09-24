@@ -329,7 +329,7 @@ console.log(Number.isInteger(20 / 0));
 */
 
 //? 167 Math and Rounding.mp4
-
+/*
 console.log(Math.sqrt(9));
 console.log(9 ** (1 / 2));
 console.log(8 ** (1 / 3)); // cubic root only like this. If needed...
@@ -387,3 +387,6 @@ console.log(+(2.7).toFixed(5));
 console.log(+(2.12345).toFixed(2));
 
 // The output color on the console is different.
+*/
+
+//? 168 The Remainder Operator.mp4
