@@ -218,6 +218,9 @@ btnTransfer.addEventListener('click', function (e) {
 });
 
 //? 158 - some and every
+
+//* some will return TRUE if ANY of the elements on the array satisfies the condition.
+
 // Request Loan
 // The bank only grant the loan if we have at least one deposit with 10% of the requested amount.
 
@@ -476,7 +479,7 @@ for (const [i, movement] of movements.entries()) {
 console.log(`-----forEach-----`);
 
 // The forEach method requires a callback function.
-// The forEach method accepts only one parameter (movement), or two (movement, index)
+// The forEach method accepts one parameter (movement), or two (movement, index)
 // or the 3 as below (movement, index, array)
 // The 1st one will always be the current element of the array, 2nd will be the index and 3rd
 // the entire array.
@@ -604,9 +607,10 @@ GOOD LUCK 😀
 
 // Map, filter and reduce.
 /* 
-Map is a method to perform a task in all items of the array and it returns a new array
-containing the result of the task, like all items * 2. In forEach it returns the same array
-Map returns a new one.
+//* Map is a method to perform a task in all items of the array and it returns a new array
+//* containing the result of the task, like all items * 2. In forEach it returns the 
+//* same array. Map returns a new one.
+//* Map returns an array with the same size as the original array.
 
 Filter returns a new array with all the items that returned true to a given condition, 
 like item > 2.
@@ -1021,6 +1025,9 @@ const overallBallance = accounts
   .reduce((acc, mov) => acc + mov, 0);
 console.log(overallBallance);
 
+//* FLAT returns an array of arrays
+//* FLATMAP returns one array with all the elements of all arrays.
+
 // It's pretty common to use a map and then flat, so we have a flatmap function.
 // flatMap
 const overallBallance2 = accounts
@@ -1031,7 +1038,6 @@ console.log(overallBallance);
 // flatMap only goes 1 level deep and we cannot change it.
 // If more than 1 level needed, gotta go with flat.
 */
-
 // 160 Sorting Arrays.mp4
 /*
 // Strings
@@ -1078,7 +1084,7 @@ console.log(movements);
 */
 
 //? 161 More Ways of Creating and Filling Arrays.mp4
-
+/*
 // We've been doing this:
 const arr = [1, 2, 3, 4, 5, 6, 7];
 console.log(new Array(1, 2, 3, 4, 5, 6, 7));
@@ -1140,3 +1146,308 @@ labelBalance.addEventListener('click', function () {
 // Thats why we encapsulated it in a Array.from, creating an array.
 // Then we used the 2nd argument of Array.from using an arrow functin to
 // replace the euro sign to nothing.
+*/
+
+//? 164 Array Methods Practice
+/*
+//* How much has been deposited in all the accounts in the bank?
+
+const overallDeposits = accounts
+  .flatMap(acc => acc.movements) // already return one array with all elements
+  // .map(acc => acc.movements); // returns an array of arrays
+  .filter(mov => mov > 0)
+  .reduce((sum, cur) => sum + cur, 0); // sum + current, begining at zero.
+console.log(overallDeposits);
+
+// This one got me, i tried a lot of things, then startet watching the lecture and a simple phrase changed everything
+// "The first thing is to get all the values in a big array", I was trying to get all the POSITIVE values in a big array.
+
+//* How many depoits have been in the bank with at least 1.000
+
+// const numDeposits1k = accounts
+//   .flatMap(acc => acc.movements)
+//   .filter(mov => mov >= 1000).length;
+// console.log(numDeposits1k);
+
+// Using reduce
+
+const numDeposits1k = accounts
+  .flatMap(acc => acc.movements)
+  .reduce((count, cur) => (cur >= 1000 ? ++count : count), 0);
+//! .reduce((count, cur) => (cur >= 1000 ? count++ : count), 0); count++ does not work
+console.log(numDeposits1k);
+
+// The callback function of the reduce method has a first parameter the accumulator.
+// That's the snowball onto which we want to accumulate a certain value.
+// if the current element is bigger than 1000, sum 1 to count, otherwise just
+// maintain count.
+
+let a = 10;
+console.log(a++); // a is still 10
+console.log(a); // now it's 11
+
+// The ++ operator does indeed updates the value, but returns the old value.
+
+// Prefixed ++ operator
+let b = 10;
+console.log(++b);
+console.log(b);
+
+//* Reduce is the swiss knife of the array methods.
+
+//* Create an object that contains the sum of the deposits and withdraws.
+
+// const sums = accounts // we can have it like this and log sums at the end, or:
+const { deposits, withdrawals } = accounts // de-structure it and log deposits and withdraws
+  .flatMap(acc => acc.movements)
+  .reduce(
+    (sums, cur) => {
+      // cur > 0 ? (sums.deposits += cur) : (sums.withdrawals += cur); // can be replaced by:
+      sums[cur > 0 ? 'deposits' : 'withdrawals'] += cur; //* using the brackets notation instead of dots notation.
+      return sums;
+    },
+    { deposits: 0, withdrawals: 0 }
+  );
+console.log(deposits, withdrawals);
+
+// The goal of the exercise is to create an object, so we included the {deposits:0, withdraws:0}
+// in the end of the reduce function as an object.
+
+//* Remembering that if an arrow function has {} it needs the RETURN statement.
+
+//* This was a good use case of how to use something different than a PRIMITIVE value
+//* as the accumulator of the reduce method.
+
+//* Challenge to recreate the filter, map and reduce methods with only reduce method.
+
+//* Create a function that converts any string to Title Case.
+
+// this is a nice title -> This is a Nice Title
+
+// This version has a weird outcome when the first letter is an exeption.
+// const convertTitleCase = function (title) {
+//   const exeptions = ['a', 'an', 'the', 'but', 'or', 'on', 'in', 'with', 'and'];
+
+//   const titleCase = title
+//     .toLowerCase()
+//     .split(' ')
+//     .map(word =>
+//       exeptions.includes(word) ? word : word[0].toUpperCase() + word.slice(1)
+//     )
+//     .join(' ');
+
+//   return titleCase;
+// };
+
+// This solved:
+const convertTitleCase = function (title) {
+  const capitalize = str => str[0].toUpperCase() + str.slice(1);
+
+  const exeptions = [
+    'a',
+    'an',
+    'the',
+    'but',
+    'or',
+    'on',
+    'in',
+    'with',
+    'and',
+    'is',
+  ];
+
+  const titleCase = title
+    .toLowerCase()
+    .split(' ')
+    .map(word => (exeptions.includes(word) ? word : capitalize(word)))
+    .join(' ');
+
+  return capitalize(titleCase);
+};
+
+console.log(convertTitleCase('this is a nice title'));
+console.log(convertTitleCase('this is a LONG title, but not too long'));
+console.log(convertTitleCase('and here is another title with an EXAMPLE'));
+*/
+
+//? 163 Coding Challenge #4.mp4
+
+///////////////////////////////////////
+// Coding Challenge #4
+
+/* 
+Julia and Kate are still studying dogs, and this time they are studying if dogs are 
+eating too much or too little. Eating too much means the dog's current food portion 
+is larger than the recommended portion, and eating too little is the opposite.
+Eating an okay amount means the dog's current food portion is within a range 10% 
+above and 10% below the recommended portion (see hint).
+
+1. Loop over the array containing dog objects, and for each dog, calculate the 
+recommended food portion and add it to the object as a new property. Do NOT create 
+a new array, simply loop over the array. 
+Forumla: recommendedFood = weight ** 0.75 * 28. (The result is in grams of food, 
+and the weight needs to be in kg)
+
+2. Find Sarah's dog and log to the console whether it's eating too much or too little.
+HINT: Some dogs have multiple owners, so you first need to find Sarah in the owners 
+array, and so this one is a bit tricky (on purpose) 🤓 The owners are inside an array.
+
+3. Create an array containing all owners of dogs who eat too much ('ownersEatTooMuch') 
+and an array with all owners of dogs who eat too little ('ownersEatTooLittle').
+
+4. Log a string to the console for each array created in 3., like this: "Matilda and 
+Alice and Bob's dogs eat too much!" and "Sarah and John and Michael's dogs eat too 
+little!"
+
+5. Log to the console whether there is any dog eating EXACTLY the amount of food that 
+is recommended (just true or false)
+
+6. Log to the console whether there is any dog eating an OKAY amount of food (just  
+true or false)
+
+7. Create an array containing the dogs that are eating an OKAY amount of food (try to 
+reuse the condition used in 6.)
+
+8. Create a shallow copy of the dogs array and sort it by recommended food portion in 
+an ascending order (keep in mind that the portions are inside the array's objects). 
+To sort it is a little bit trickier, the value is inside an object. We still have
+the A and B parameters, but these are no objects. We have to get that propertie out 
+of the objects.
+
+HINT 1: Use many different tools to solve these challenges, you can use the summary 
+lecture to choose between them 😉
+HINT 2: Being within a range 10% above and below the recommended portion means: 
+current > (recommended * 0.90) && current < (recommended * 1.10). Basically, the 
+ current portion should be between 90% and 110% of the recommended portion.
+
+TEST DATA:
+const dogs = [
+  { weight: 22, curFood: 250, owners: ['Alice', 'Bob'] },
+  { weight: 8, curFood: 200, owners: ['Matilda'] },
+  { weight: 13, curFood: 275, owners: ['Sarah', 'John'] },
+  { weight: 32, curFood: 340, owners: ['Michael'] }
+];
+*/
+const dogs = [
+  { weight: 22, curFood: 250, owners: ['Alice', 'Bob'] },
+  { weight: 8, curFood: 200, owners: ['Matilda'] },
+  { weight: 13, curFood: 275, owners: ['Sarah', 'John'] },
+  { weight: 32, curFood: 340, owners: ['Michael'] },
+];
+console.log(dogs);
+
+// 1. Loop over the array containing dog objects, and for each dog, calculate the
+// recommended food portion and add it to the object as a new property. Do NOT create
+// a new array, simply loop over the array.
+// Forumla: recommendedFood = weight ** 0.75 * 28. The result is in grams of food,
+// and the weight needs to be in kg)
+
+//* As function
+// const recFood = function (dogs) {
+//   dogs.forEach(function (dog) {
+//     dog.recFood = (dog.weight ** 0.75 * 28) / 1000;
+//   });
+// };
+
+//* As arrow function
+// const createRecFood = dogs =>
+//   dogs.forEach(dog => (dog.recFood = (dog.weight ** 0.75 * 28) / 1000));
+// createRecFood(dogs);recFood
+
+//* Creating directly
+dogs.forEach(dog => (dog.recFood = Math.trunc(dog.weight ** 0.75 * 28)));
+// console.log(dogs);
+
+// 2. Find Sarah's dog and log to the console whether it's eating too much or too little.
+// HINT: Some dogs have multiple owners, so you first need to find Sarah in the owners
+// array, and so this one is a bit tricky (on purpose) 🤓 The owners are inside an array.
+
+const sarahDog = dogs.find(dog => dog.owners.includes('Sarah'));
+console.log('Sarah dog:');
+console.log(sarahDog);
+
+// if (sarahDog.curFood > 1.1 * sarahDog.recFood) {
+//   console.log('Eating too much');
+// } else if (sarahDog.curFood < 0.9 * sarahDog.recFood) {
+//   console.log('Eating too little');
+// }
+
+console.log(
+  `Sarah's dog is eating too ${
+    sarahDog.curFood > sarahDog.recFood ? 'much' : 'little'
+  }`
+);
+
+// 3. Create an array containing all owners of dogs who eat too much ('ownersEatTooMuch')
+// and an array with all owners of dogs who eat too little ('ownersEatTooLittle').
+
+// I did this, and tried flatMap and couldn't do it...
+// HOW DID I TRIED???
+// const ownersEatTooLittle = dogs.filter(dog => dog.curFood < dog.recFood);
+// console.log(ownersEatTooLittle);
+
+const ownersEatTooMuch = dogs
+  .filter(dog => dog.curFood > dog.recFood)
+  .map(dog => dog.owners)
+  .flat();
+console.log(ownersEatTooMuch);
+
+const ownersEatTooLittle = dogs
+  .filter(dog => dog.curFood < dog.recFood)
+  .map(dog => dog.owners)
+  .flat();
+console.log(ownersEatTooLittle);
+
+// 4. Log a string to the console for each array created in 3., like this: "Matilda and
+// Alice and Bob's dogs eat too much!" and "Sarah and John and Michael's dogs eat too
+// little!"
+
+console.log(`${ownersEatTooMuch.join(' and ')}'s dogs eat too much!`);
+console.log(`${ownersEatTooLittle.join(' and ')}'s dogs eat too little!`);
+
+// 5. Log to the console whether there is any dog eating EXACTLY the amount of food that
+// is recommended (just true or false)
+
+console.log(dogs.some(dog => dog.curFood === dog.recFood));
+
+// 6. Log to the console whether there is any dog eating an OKAY amount of food (just
+// true or false)
+const checkEating = dog =>
+  dog.curFood > 0.9 * dog.recFood && dog.curFood < 1.1 * dog.recFood;
+
+console.log(dogs.some(checkEating));
+
+// 7. Create an array containing the dogs that are eating an OKAY amount of food (try to
+// reuse the condition used in 6.)
+
+// const dogsEatingOK = dogs.map(
+//   dog => dog.curFood > 0.9 * dog.recFood && dog.curFood < 1.1 * dog.recFood
+// );
+// console.log(dogsEatingOK);
+
+// const dogsEatingOK = dogs.map(function (dog) {
+//   return dog.curFood > 0.9 * dog.recFood && dog.curFood < 1.1 * dog.recFood;
+// });
+// console.log(dogsEatingOK);
+const dogEatingOK = dogs.filter(checkEating);
+console.log(dogEatingOK);
+
+console.log(dogEatingOK.map(dog => dog.owners).flat());
+
+const michael = dogs
+  .filter(checkEating)
+  .map(dog => dog.owners)
+  .flat();
+console.log(...michael);
+
+// 8. Create a shallow copy of the dogs array and sort it by recommended food portion in
+// an ascending order (keep in mind that the portions are inside the array's objects).
+// To sort it is a little bit trickier, the value is inside an object. We still have
+// the A and B parameters, but these are no objects. We have to get that propertie out
+// of the objects.
+
+// console.log(dogs.slice()); // creates a shallow copy
+// console.log([...dogs]); // creates a shallow copy
+
+const dogsSorted = dogs.slice().sort((a, b) => a.recFood - b.recFood);
+console.log(dogsSorted);
