@@ -94,7 +94,7 @@ const displayMovements = function (movements, sort = false) {
         <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
-        <div class="movements__value">${mov}€</div>
+        <div class="movements__value">${mov.toFixed(2)}€</div>
       </div>
     `;
 
@@ -104,19 +104,19 @@ const displayMovements = function (movements, sort = false) {
 
 const calcDisplayBalance = function (acc) {
   acc.balance = acc.movements.reduce((acc, mov) => acc + mov, 0);
-  labelBalance.textContent = `${acc.balance}€`;
+  labelBalance.textContent = `${acc.balance.toFixed(2)}€`;
 };
 
 const calcDisplaySummary = function (acc) {
   const incomes = acc.movements
     .filter(mov => mov > 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumIn.textContent = `${incomes}€`;
+  labelSumIn.textContent = `${incomes.toFixed(2)}€`;
 
   const out = acc.movements
     .filter(mov => mov < 0)
     .reduce((acc, mov) => acc + mov, 0);
-  labelSumOut.textContent = `${Math.abs(out)}€`;
+  labelSumOut.textContent = `${Math.abs(out).toFixed(2)}€`;
 
   const interest = acc.movements
     .filter(mov => mov > 0)
@@ -126,7 +126,7 @@ const calcDisplaySummary = function (acc) {
       return int >= 1;
     })
     .reduce((acc, int) => acc + int, 0);
-  labelSumInterest.textContent = `${interest}€`;
+  labelSumInterest.textContent = `${interest.toFixed(2)}€`;
 };
 
 const createUsernames = function (accs) {
@@ -206,7 +206,10 @@ btnTransfer.addEventListener('click', function (e) {
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
 
-  const amount = +inputLoanAmount.value;
+  // const amount = +inputLoanAmount.value;
+  const amount = Math.floor(inputLoanAmount.value);
+  // replaced the + by Math.floor to round it down, and since it already does type
+  // coercion, the + is no longer necessary.
 
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
     // Add movement
@@ -248,12 +251,17 @@ btnSort.addEventListener('click', function (e) {
   sorted = !sorted;
 });
 
+//? LAZY LOGIN
+inputLoginUsername.value = 'js';
+inputLoginPin.value = 1111;
+btnLogin.click();
+
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
 
 //? 166 Converting and Checking Numbers.mp4
-
+/*
 // All numbers are represented internally as floating point numbers is JS.
 // That's why we only have one data type for all numbers in JS.
 
@@ -318,3 +326,64 @@ console.log(Number.isInteger(20.0)); // Remember, this is also integer.
 console.log(Number.isInteger(20 / 0));
 
 // These methods are useful when we need to read a value coming from a CSS...
+*/
+
+//? 167 Math and Rounding.mp4
+
+console.log(Math.sqrt(9));
+console.log(9 ** (1 / 2));
+console.log(8 ** (1 / 3)); // cubic root only like this. If needed...
+
+console.log(Math.max(23, 5, 9, 10, 15, 69));
+console.log(Math.max(23, 5, 9, 10, 15, '69')); // Math.max does type coercion.
+console.log(Math.max(23, 5, 9, 10, 15, '69px')); // Math.max doesn't parse.
+
+console.log(Math.min(23, 5, 9, 10, 15, 69));
+
+// A = PI R ˆ 2, area of a circle with 10 pixels.
+console.log(Math.PI * Number.parseFloat('10px') ** 2);
+
+// Generate random dice numbers:
+console.log(Math.trunc(Math.random() * 6 + 1));
+
+// Now let's generalize to create any random number between 2 numbers.
+
+// const randInt = (min, max) => Math.trunc(Math.random() * (max - min) + 1) + min;
+const randInt = (min, max) => Math.floor(Math.random() * (max - min) + 1) + min;
+
+// Math.random gives a number between 0 and 1
+// Multiplied by (max-min) we get a number between 0 and (max-min)
+// Now if we add min to both sides [that's why it is outside of the()]: 0+min = min and (max-min)+min = max
+// Now we have min to max.
+
+// console.log(randInt(10, 20));
+
+// Rounding integers
+console.log(Math.trunc(23.3));
+console.log(Math.round(23.9));
+
+console.log(Math.ceil(26.3));
+console.log(Math.ceil(26.9));
+
+console.log(Math.floor(29.3));
+console.log(Math.floor(29.9));
+
+// floor and trunc do the same when we are dealing with positive numbers.
+console.log(Math.trunc(-30.5));
+console.log(Math.floor(-30.5));
+
+// So, floor is a little bit better than trunc.
+
+// Rounding decimals.
+// This returns STRINGS.
+console.log((2.7).toFixed(0)); // no decimal parts
+console.log((2.7).toFixed(5)); // 5 decimal parts
+console.log((2.345).toFixed(2)); // 2 decimal parts, rounded up.
+console.log((2.344).toFixed(2)); // 2 decimal parts, rounded down.
+
+// These 3 returns strings as numbers, to get actually numbers we have to type coerce.
+console.log(+(2.7).toFixed(0));
+console.log(+(2.7).toFixed(5));
+console.log(+(2.12345).toFixed(2));
+
+// The output color on the console is different.
