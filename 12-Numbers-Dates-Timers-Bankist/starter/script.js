@@ -164,7 +164,7 @@ btnLogin.addEventListener('click', function (e) {
   );
   console.log(currentAccount);
 
-  if (currentAccount?.pin === Number(inputLoginPin.value)) {
+  if (currentAccount?.pin === +inputLoginPin.value) {
     // Display UI and message
     labelWelcome.textContent = `Welcome back, ${
       currentAccount.owner.split(' ')[0]
@@ -182,7 +182,7 @@ btnLogin.addEventListener('click', function (e) {
 
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
-  const amount = Number(inputTransferAmount.value);
+  const amount = +inputTransferAmount.value;
   const receiverAcc = accounts.find(
     acc => acc.username === inputTransferTo.value
   );
@@ -206,7 +206,7 @@ btnTransfer.addEventListener('click', function (e) {
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
 
-  const amount = Number(inputLoanAmount.value);
+  const amount = +inputLoanAmount.value;
 
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
     // Add movement
@@ -223,7 +223,7 @@ btnClose.addEventListener('click', function (e) {
 
   if (
     inputCloseUsername.value === currentAccount.username &&
-    Number(inputClosePin.value) === currentAccount.pin
+    +inputClosePin.value === currentAccount.pin
   ) {
     const index = accounts.findIndex(
       acc => acc.username === currentAccount.username
@@ -251,3 +251,70 @@ btnSort.addEventListener('click', function (e) {
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
 // LECTURES
+
+//? 166 Converting and Checking Numbers.mp4
+
+// All numbers are represented internally as floating point numbers is JS.
+// That's why we only have one data type for all numbers in JS.
+
+console.log(23 === 23.0);
+
+// Base 10 - Numbers 0 to 9
+// JS uses Binary base 2 (0's and 1's)
+// Some numbers are very difficult to represent in base 2. For example 0.1
+console.log(0.1 + 0.2);
+console.log(0.1 + 0.2 === 0.3); // FALSE? No, but in JS this is an error that we have
+// to accept.
+
+// This results in 0.300000000000004
+// If we do 10/30 we get 3.3333333333, the same thing happens with JS since it is
+// binary base 2.
+
+// In some cases JS round behind the scenes, PHP and Ruby indeed uses the same system.
+
+// Convert string to number
+console.log(Number('23'));
+// The same works for:
+console.log(+'23'); // With the + operator JS will do type coercion
+console.log('23'); // With the + operator JS will do type coercion
+console.log(-'23'); // With the + operator JS will do type coercion
+console.log(typeof -'23');
+
+// With the + operand the code is more clean.
+
+// Parsing
+console.log(Number.parseInt('30px')); // returns 30 as a number, the string needs
+// to start with the number.;
+
+console.log(Number.parseInt('30px', 10));
+// parseInt has a 2nd parameter, which is the base number, as we are using base 10
+//* it returns the same result. "That can avoid some bugs in some situations"
+// If we were working with binary, we should pass 2 instead of 10.
+
+console.log(Number.parseInt('    2.5rem ')); // this returns 2
+// we can have some spaces, doesn't affect.
+
+// Since this is a GLOBAL function, w/o the Number. it also works.
+// console.log(parseFloat('2.5rem    ')); // this returns 2.5
+// However this is more 'old school', modern JS uses Number.
+
+// isNaN - check if the value is a Not a Number (NaN)
+console.log(Number.isNaN(20));
+console.log(Number.isNaN('20'));
+console.log(Number.isNaN(+'20X'));
+console.log(Number.isNaN(20 / 0)); // if we type 23/0 in console we get "Infinity"
+
+//* BEST way to check if a value is a NUMBER.
+console.log('---isFinite---');
+console.log(Number.isFinite(20));
+console.log(Number.isFinite('20'));
+console.log(Number.isFinite(+'20px'));
+console.log(Number.isFinite(20 / 0));
+
+//* If we want to check if the Number is Integer:
+console.log('---isInteger---');
+console.log(Number.isInteger(20));
+console.log(Number.isInteger(20.0)); // Remember, this is also integer.
+console.log(Number.isInteger(20 / 0));
+
+// These methods are useful when we need to read a value coming from a CSS...
