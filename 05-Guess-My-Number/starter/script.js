@@ -1,11 +1,11 @@
 'use strict';
 // this querySelector is a method to retrieve information from the html file
-// the 'message' is a paragragh named in a class
+// the 'message' is a paragraph named in a class
 // console.log(document.querySelector('.message').textContent);
 
 //071 - whats the DOM and DOM Manipulation
 // Document Object Model - structured representation of HTML documents.
-// DOM is a conecting point between JS and HTML.
+// DOM is a connecting point between JS and HTML.
 
 // 072 - selecting and Manipulating elements.
 
