@@ -27,7 +27,7 @@ function calcAge(birthYear) {
       }
       // if we change this call to const output, than the NEW OUTPUT in the console will be replaced by the original output.
     }
-    // console.log(str); // not accesible outside the block.
+    // console.log(str); // not accessible outside the block.
     console.log(milennial); // variables declared with var keyword are function scoped and can be accessed outside the block.
     // js will ignore the {}
     // console.log(add(2, 3)); // functions are block scoped and cannot be accessed outside the {}. If we take the 'use strict' mode, it will work.
@@ -42,23 +42,23 @@ const firstName = 'Paolo';
 calcAge(1985);
 
 
-// console.log(age); since age is defined in the global scope it's not accesible in the outer scope.
-// we cannot have acces to a child scope here.
+// console.log(age); since age is defined in the global scope it's not accessible in the outer scope.
+// we cannot have access to a child scope here.
 // printAge(); same here, we can't access it.
 
 // 095 Variable Environment_ Hoisting and The TDZ.mp4
-// The Execution Content of JS has a Variable enviroment, a Scope Chain and a this keyword.
-// Lets check the variable enviroment.
+// The Execution Content of JS has a Variable environment, a Scope Chain and a this keyword.
+// Lets check the variable environment.
 
 // In the creation phase before the execution the ode is scanned for variable declarations, and for
-// each variable, a new property is created in the variable enviroment object.
+// each variable, a new property is created in the variable environment object.
 
 // PRINTS...
 
 // 096 The this Keyword.mp4
 
 // special variable that is created for every execution content (every function). Takes the value of (points to) the
-// "owner" of the function in wich the this keyword is used.
+// "owner" of the function in which the this keyword is used.
 
 // console.log(this);
 
@@ -136,7 +136,7 @@ const paolo = {
     console.log(2037 - this.year);
   },
   greet: () => {
-    console.log(this); // if we expand this windo object in inspector we will see a firstName 'Kely'.
+    console.log(this); // if we expand this window object in inspector we will see a firstName 'Kely'.
     console.log(`Hey, ${this.firstName}`);
   },
 };
@@ -150,7 +150,7 @@ console.log(this.firstName); // when we try to access an property that doesn't e
 // if we replace the () => by a regular 'function ()' the call of paolo.greet() will be fine.
 */
 
-// in this code we will have an undefined this keyword inside the isMillenial function.
+// in this code we will have an undefined this keyword inside the isMillennial function.
 /*
 const paolo = {
   firstName: 'Paolo',
@@ -159,13 +159,13 @@ const paolo = {
     // console.log(this);
     console.log(2037 - this.year);
 
-    const isMillenial = function () {
+    const isMillennial = function () {
       console.log(this.year >= 1981 && this.year <= 1996);
     };
-    isMillenial();
+    isMillennial();
   },
   greet: () => {
-    console.log(this); // if we expand this windo object in inspector we will see a firstName 'Kely'.
+    console.log(this); // if we expand this window object in inspector we will see a firstName 'Kely'.
     console.log(`Hey, ${this.firstName}`);
   },
 };
@@ -183,16 +183,16 @@ const paolo = {
     // console.log(this);
     console.log(2037 - this.year);
 
-    const self = this; // self of that can be found in older codebases
+    const self = this; // self of that can be found in older code bases
 
-    const isMillenial = function () {
+    const isMillennial = function () {
       console.log(self);
       console.log(self.year >= 1981 && self.year <= 1996);
     };
-    isMillenial();
+    isMillennial();
   },
   greet: () => {
-    console.log(this); // if we expand this windo object in inspector we will see a firstName 'Kely'.
+    console.log(this); // if we expand this window object in inspector we will see a firstName 'Kely'.
     console.log(`Hey, ${this.firstName}`);
   },
 };
@@ -210,23 +210,23 @@ const paolo = {
     console.log(2037 - this.year);
 
     // Solution 1 (previous ES6)
-    // const self = this; // self of that can be found in older codebases
-    // const isMillenial = function () {
+    // const self = this; // self of that can be found in older code bases
+    // const isMillennial = function () {
     //   console.log(self);
     //   console.log(self.year >= 1981 && self.year <= 1996);
     // };
 
     // Solution 2:
     // Here the arrow function inherits the this keyword from the parent function.
-    const isMillenial = () => {
+    const isMillennial = () => {
       console.log(this);
       console.log(this.year >= 1981 && this.year <= 1996);
     };
-    isMillenial();
+    isMillennial();
   },
 
   greet: () => {
-    console.log(this); // if we expand this windo object in inspector we will see a firstName 'Kely'.
+    console.log(this); // if we expand this window object in inspector we will see a firstName 'Kely'.
     console.log(`Hey, ${this.firstName}`);
   },
 };
@@ -276,8 +276,8 @@ console.log('Me', me); // here we get the same age for both
 // 099 Primitives vs. Objects (Primitive vs. Reference Types)2.png
 // Regarding primitive values on call stack:
 // When we first set the age to 30, it stores that information in a so called 0001 memory address.
-// oldage is equal to age, so it has the same 0001 memory address.
-// when we change the age to 31, a new memory address (0002) will be alocated with the new value.
+// oldAge is equal to age, so it has the same 0001 memory address.
+// when we change the age to 31, a new memory address (0002) will be allocated with the new value.
 
 // Reference values:
 // So again, when we declare a variable as an object, an identifier is created,
@@ -297,7 +297,7 @@ console.log('Me', me); // here we get the same age for both
 // So keep that in mind, whenever you're working with const.
 
 // 099 Primitives vs. Objects (Primitive vs. Reference Types).png
-// We can see that a reference value copied to another object has the same adrress in the HEAP.
+// We can see that a reference value copied to another object has the same address in the HEAP.
 // So if we change the value of this Address in HEAP the new value will point to all the objects.
 // In this case the variables me and kely.
 
@@ -341,7 +341,7 @@ marriedJessica.lastName = 'Davis'; // now we just updated the object
 console.log('Before marriage:', jessica);
 console.log('After marriage:', marriedJessica);
 
-// Now how do we efective copy an object?
+// Now how do we effective copy an object?
 // Copying objects
 
 const jessica2 = {
@@ -350,8 +350,8 @@ const jessica2 = {
   age: 27,
 };
 
-// The object.assing will merge two objects and create a new one. Here we merged and empty
-// object with the jessica2 const just created with the lastname williams.
+// The object.assign will merge two objects and create a new one. Here we merged and empty
+// object with the jessica2 const just created with the lastName williams.
 const jessicaCopy = Object.assign({}, jessica2);
 jessicaCopy.lastName = 'Davis';
 console.log('');
@@ -371,8 +371,8 @@ const jessica3 = {
   family: ['Alice', 'Bob'], // now we included this array.
 };
 
-// The object.assing will merge two objects and create a new one. Here we merged and empty
-// object with the jessica2 const just created with the lastname williams.
+// The object.assign will merge two objects and create a new one. Here we merged and empty
+// object with the jessica2 const just created with the lastName williams.
 
 // now and example of this issue:
 const jessicaCopy3 = Object.assign({}, jessica3);

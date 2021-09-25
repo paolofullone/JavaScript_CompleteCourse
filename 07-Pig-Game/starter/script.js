@@ -17,16 +17,16 @@ const btnNew = document.querySelector('.btn--new');
 const btnRoll = document.querySelector('.btn--roll');
 const btnHold = document.querySelector('.btn--hold');
 
-// settin the scores to 0
+// setting the scores to 0
 score0El.textContent = 0;
 score1El.textContent = 0;
 
 let currentScore = 0;
 
-// hiding dice at the begining of the game
+// hiding dice at the beginning of the game
 diceEl.classList.add('hidden');
 
-// in order to hide it, we added to css file the .hiden class:
+// in order to hide it, we added to css file the .hidden class:
 // .hidden {
 //   display: none
 // }
@@ -60,7 +60,7 @@ btnRoll.addEventListener('click', function () {
 // we have to use the hash (#) selector for id's, the (.) is for classes with querySelector, another way is using getElementById
 // getElementById is a bit faster if you're selecting thousands of elements.
 // Selecting elements
-const player0El = document.querySelector('.player--0'); // we will use this to change the appearence of active player.
+const player0El = document.querySelector('.player--0'); // we will use this to change the appearance of active player.
 const player1El = document.querySelector('.player--1');
 const score0El = document.querySelector('#score--0');
 const score1El = document.getElementById('score--1');
@@ -72,7 +72,7 @@ const btnNew = document.querySelector('.btn--new');
 const btnRoll = document.querySelector('.btn--roll');
 const btnHold = document.querySelector('.btn--hold');
 
-// settin the scores to 0
+// setting the scores to 0
 score0El.textContent = 0;
 score1El.textContent = 0;
 
@@ -80,10 +80,10 @@ const scores = [0, 0]; //this are the starting scores of both players.
 let currentScore = 0;
 let activePlayer = 0;
 
-// hiding dice at the begining of the game
+// hiding dice at the beginning of the game
 diceEl.classList.add('hidden');
 
-// in order to hide it, we added to css file the .hiden class:
+// in order to hide it, we added to css file the .hidden class:
 // .hidden {
 //   display: none
 // }
@@ -124,7 +124,7 @@ btnRoll.addEventListener('click', function () {
 
 // 085 Holding Current Score.en_US.srt
 // we used a playing boolean variable to control the state of the game active-inactive.
-// in inactive mode, none of the roll, hold comands are executed.
+// in inactive mode, none of the roll, hold commands are executed.
 
 // Selecting elements
 const player0El = document.querySelector('.player--0');
@@ -158,7 +158,7 @@ let currentScore = 0;
 let activePlayer = 0;
 let playing = true; // we will use it to finish the game and interrupt the access to buttons roll, hold...
 
-// hiding dice at the begining of the game
+// hiding dice at the beginning of the game
 diceEl.classList.add('hidden');
 
 btnRoll.addEventListener('click', function () {
@@ -192,7 +192,7 @@ btnHold.addEventListener('click', function () {
     document.getElementById(`score--${activePlayer}`).textContent =
       scores[activePlayer];
 
-    // 2. Check if the socre is >= 100
+    // 2. Check if the score is >= 100
     // Finish the game or:
     if (scores[activePlayer] >= 10) {
       playing = false;
@@ -235,7 +235,7 @@ const switchPlayers = function () {
   player1El.classList.toggle('player--active'); // or it will add the class if it does not exists.
 };
 
-// we moved the variables to inside the const init wich is a function, so the variables only exists inside the function.
+// we moved the variables to inside the const init which is a function, so the variables only exists inside the function.
 // this caused an error in the page, so we have to declare the variables outside the function w/o values and
 // assign the values inside the function, w/o the const or let declarations.
 let scores, currentScore, activePlayer, playing;
@@ -254,9 +254,9 @@ const init = function () {
   current1El.textContent = 0;
   player0El.classList.remove('player--winner');
   player1El.classList.remove('player--winner');
-  player0El.classList.add('player--active'); // player 0 is the active player in the begining of the game.
+  player0El.classList.add('player--active'); // player 0 is the active player in the beginning of the game.
   player1El.classList.remove('player--active');
-  // hiding dice at the begining of the game
+  // hiding dice at the beginning of the game
   diceEl.classList.add('hidden');
 };
 init();
@@ -289,7 +289,7 @@ btnHold.addEventListener('click', function () {
     document.getElementById(`score--${activePlayer}`).textContent =
       scores[activePlayer];
 
-    // 2. Check if the socre is >= 100
+    // 2. Check if the score is >= 100
     // Finish the game or:
     if (scores[activePlayer] >= 100) {
       playing = false;
