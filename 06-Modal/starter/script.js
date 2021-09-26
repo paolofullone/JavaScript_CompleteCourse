@@ -36,7 +36,7 @@ overlay.addEventListener('click', closeModal);
 //   console.log('a key was pressed');
 // });
 
-// with this code we can see on conole a KeyboardEvent that shows the key pressed
+// with this code we can see on console a KeyboardEvent that shows the key pressed
 // document.addEventListener('keydown', function (e) {
 //   //e stands for event
 //   console.log(e);
