@@ -21,9 +21,9 @@ const account1 = {
     '2020-01-28T09:15:04.904Z',
     '2020-04-01T10:17:24.185Z',
     '2020-05-08T14:11:59.604Z',
-    '2020-05-27T17:01:17.194Z',
-    '2020-07-11T23:36:17.929Z',
-    '2020-07-12T10:51:36.790Z',
+    '2021-09-22T17:01:17.194Z', // changed these 3 dates do see 'yesterday'.
+    '2021-09-25T23:36:17.929Z',
+    '2021-09-26T19:51:36.790Z',
   ],
   currency: 'EUR',
   locale: 'pt-PT', // de-DE
@@ -81,19 +81,52 @@ const inputClosePin = document.querySelector('.form__input--pin');
 /////////////////////////////////////////////////
 // Functions
 
-const displayMovements = function (movements, sort = false) {
+const formatMovementsDate = function (date) {
+  // inserted at 171, now we have the dates along the identification
+  //* we are using a technique of while looping over one array(movements), use the index
+  //* to loop over another array (movementsDates)
+
+  const calcDaysPassed = (date1, date2) =>
+    Math.round(Math.abs(date2 - date1) / (1000 * 60 * 60 * 24));
+
+  const daysPassed = calcDaysPassed(new Date(), date);
+  console.log(daysPassed);
+
+  // implementing 'yesterday'
+  if (daysPassed === 0) return 'Today';
+  if (daysPassed === 1) return 'Yesterday';
+  if (daysPassed <= 7) return `${daysPassed} days ago`;
+  else {
+    const day = `${date.getDate()}`.padStart(2, 0);
+    const month = `${date.getMonth() + 1}`.padStart(2, 0);
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
+  }
+};
+
+// once we return, the function stops executing, so if the first one
+// returns, then nothing else is executed here.
+// The else is unnecessary, we can remove it and will work the same way.
+
+const displayMovements = function (acc, sort = false) {
   containerMovements.innerHTML = '';
 
-  const movs = sort ? movements.slice().sort((a, b) => a - b) : movements;
+  const movs = sort
+    ? acc.movements.slice().sort((a, b) => a - b)
+    : acc.movements;
 
   movs.forEach(function (mov, i) {
     const type = mov > 0 ? 'deposit' : 'withdrawal';
+
+    const date = new Date(acc.movementsDates[i]);
+    const displayDate = formatMovementsDate(date);
 
     const html = `
       <div class="movements__row">
         <div class="movements__type movements__type--${type}">${
       i + 1
     } ${type}</div>
+        <div class="movements__date">${displayDate}</div>
         <div class="movements__value">${mov.toFixed(2)}€</div>
       </div>
     `;
@@ -142,7 +175,7 @@ createUsernames(accounts);
 
 const updateUI = function (acc) {
   // Display movements
-  displayMovements(acc.movements);
+  displayMovements(acc);
 
   // Display balance
   calcDisplayBalance(acc);
@@ -171,6 +204,23 @@ btnLogin.addEventListener('click', function (e) {
     }`;
     containerApp.style.opacity = 100;
 
+    //? 171 - Adding dates to bank
+    // Create current date and time as logs in.
+    const now = new Date();
+    const day = `${now.getDate()}`.padStart(2, 0);
+    const month = `${now.getMonth() + 1}`.padStart(2, 0);
+    const year = now.getFullYear();
+    currentAccount.movementsDates.push(new Date());
+    const hour = `${now.getHours()}`.padStart(2, 0);
+    const min = `${now.getMinutes()}`.padStart(2, 0);
+
+    // padStart will show 09 instead of 9 in september.
+    // now let's implement the dates in the function that displays movements.
+
+    // labelDate.textContent = now; // As of Sun Sep 26 2021 18:13:34 GMT-0300
+    labelDate.textContent = `${day}/${month}/${year}, ${hour}:${min}`;
+    //
+
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
@@ -179,7 +229,7 @@ btnLogin.addEventListener('click', function (e) {
     updateUI(currentAccount);
   }
 });
-
+// Transfers
 btnTransfer.addEventListener('click', function (e) {
   e.preventDefault();
   const amount = +inputTransferAmount.value;
@@ -198,11 +248,16 @@ btnTransfer.addEventListener('click', function (e) {
     currentAccount.movements.push(-amount);
     receiverAcc.movements.push(amount);
 
+    // Adding transfer date
+    currentAccount.movementsDates.push(new Date().toISOString());
+    receiverAcc.movementsDates.push(new Date().toISOString());
+
     // Update UI
     updateUI(currentAccount);
   }
 });
 
+// Requesting Loan
 btnLoan.addEventListener('click', function (e) {
   e.preventDefault();
 
@@ -214,7 +269,8 @@ btnLoan.addEventListener('click', function (e) {
   if (amount > 0 && currentAccount.movements.some(mov => mov >= amount * 0.1)) {
     // Add movement
     currentAccount.movements.push(amount);
-
+    // Add loan date
+    currentAccount.movementsDates.push(new Date().toISOString());
     // Update UI
     updateUI(currentAccount);
   }
@@ -512,4 +568,22 @@ future.setFullYear(2060);
 console.log(future);
 */
 
-//? 171 Adding Dates to _Bank ist_ App.mp4
+//? 172 Operations With Dates.mp4
+
+const future = new Date(2050, 7, 10, 16, 5);
+console.log(+future);
+
+const calcDaysPassed = (date1, date2) =>
+  Math.abs(date2 - date1) / (1000 * 60 * 60 * 24);
+// converts the timestamp returned from the difference between two dates
+// to days (1000 milliseconds, 60 seconds, 60 minutes, 24 hours)
+// With Math.abs doesn't matter if the first date is the oldest or newer.
+
+const days1 = calcDaysPassed(
+  new Date(2050, 9, 10),
+  new Date(2050, 9, 1, 10, 8)
+);
+console.log(days1);
+
+// If we had also hour and minute, we could use Math.round() before Math.abs()
+// to round it.
