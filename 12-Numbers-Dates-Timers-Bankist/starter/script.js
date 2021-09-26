@@ -162,7 +162,7 @@ btnLogin.addEventListener('click', function (e) {
   currentAccount = accounts.find(
     acc => acc.username === inputLoginUsername.value
   );
-  console.log(currentAccount);
+  // console.log(currentAccount);
 
   if (currentAccount?.pin === +inputLoginPin.value) {
     // Display UI and message
@@ -390,3 +390,126 @@ console.log(+(2.12345).toFixed(2));
 */
 
 //? 168 The Remainder Operator.mp4
+/*
+console.log(4 % 2);
+console.log(5 % 2);
+console.log(8 % 3); // 2*3 + 2
+
+const isEven = n => n % 2 === 0;
+console.log(isEven(2));
+console.log(isEven(3));
+
+// Let's apply in the application, just for fun.
+// we will paint the movements based on some conditions.
+
+labelBalance.addEventListener('click', function () {
+  [...document.querySelectorAll('.movements__row')].forEach(function (row, i) {
+    // 0. 2, 4, 6
+    if (i % 2 === 0) row.style.backgroundColor = '#00ffcc';
+
+    // 0, 3, 6, 9
+    if (i % 3 === 0) row.style.backgroundColor = '#00ccff';
+  });
+});
+// we have some overlap, but this is just for fun.
+*/
+
+//? 169 Working with BigInt.mp4
+/*
+// Numbers are represented by 64 bits, that means that they have exactly 64 1 or 0's.
+// 53 are used to store the number itself, the rest is used to store the decimal point
+// and sign. So, there's a limit of how big the numbers can be:
+console.log(2 ** 53 - 1); // this is the biggest number JS can represent.
+console.log(Number.MAX_SAFE_INTEGER); // it is so important, that it is stored here.
+console.log(`---NOW JS IS IN TROUBLE, CANT CALCULATE CORRECTLY---`);
+console.log(2 ** 53);
+console.log(2 ** 53 + 100);
+// For some numbers JS use some tricks behind the scenes and it works, but they are
+// not SAFE numbers in JS. And we can face some situations with data coming from other
+// languages that contains these kind of numbers.
+
+// In ES2020 was introduced the BigInt, that the numbers are as big as we wanna them to be.
+console.log('----BIG INT----');
+console.log(654987531465413581681468135168);
+console.log(654987531465413581681468135168n); // if we add the n in the end it will transform to big int.
+console.log(BigInt(6546598134843));
+
+// Operations with BigInt
+console.log(10000n + 10000n);
+console.log(65465165165461651146514654n + 654651234684315n);
+// console.log(Math.sqrt(16n)); // this doesn't work.
+
+// Cannot mix bigint with other types of numbers.
+const huge = 6514165165165165168n;
+const num = 20;
+// console.log(huge * num); // returns an error, cannot mix BigInt and other types.
+console.log(huge * BigInt(num)); // this works.
+
+// Exceptions
+console.log(20n > 10);
+console.log(20n === 20); // false because they have different types and === doesn't do
+// type coercion.
+console.log(typeof 20n);
+console.log(20n == 20); // true because JS will convert the 20n to regular number
+// with type coercion.;
+
+// Strings
+console.log(huge + ' is really big!!!'); // JS converts the bigInt to string.
+
+// Divisions
+console.log(11n / 3n); // it will cut off the decimal part, looks like it round down.
+*/
+
+//? 170 Creating Dates.mp4
+/*
+// Create a date
+// Using new Date w/o parameters.
+const now = new Date();
+console.log(now);
+
+// Passing in a string:
+console.log(new Date('Sep 26 2021 06:30:22'));
+// This also works, but not really recommended.
+console.log(new Date('August 10, 1978'));
+// using accounts information.
+console.log(new Date(account1.movementsDates[0]));
+
+// If we type account1 in console, we get the movement dates in an nested array,
+// the Z in the end stands for a UTC, Coordinated Universal Time, basically the
+// time without any time zone in London, and also without daylight savings.
+
+// My birthday in 2050, the MONTH is ZERO based.
+console.log(new Date(2050, 7, 10, 16, 5, 35));
+
+// if we try november 31st, JS will automatically corrects
+console.log(new Date(2050, 10, 31));
+
+// Unix Time: January 1st, 1970
+console.log(new Date(0)); // here returns dec. 31st 21:00 due to -3 hours GMT.
+// 3 days latter then Unix Time:
+console.log(new Date(3 * 24 * 60 * 60 * 1000));
+// 3 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds.
+// Typing 3*24*60*60*100 in console we get 259200000 as return, the time stamp of this date.
+*/
+/*
+// Working with dates
+const future = new Date(2050, 7, 10, 16, 5);
+console.log(future);
+console.log(future.getFullYear()); // we also have getYear, but never use getYear.
+console.log(future.getMonth()); // zero based
+console.log(future.getDate()); // get the DAY
+console.log(future.getDay()); // get the DAY of the week
+console.log(future.getHours());
+console.log(future.getMinutes());
+console.log(future.getSeconds());
+console.log(future.toISOString()); // similar to accounts dates strings.
+console.log(future.getTime()); // Time stamp since january 1st, 1970
+console.log(new Date(2543771100000)); // we can create a new date based on timestamp as well.
+console.log(Date.now()); // gives the time stamp right now.
+
+// we can also set the year, month, day, hour... of any date:
+future.setFullYear(2060);
+console.log(future);
+*/
+
+//? 171 Adding Dates to _Bank ist_ App.mp4
