@@ -94,3 +94,79 @@ document
     // message.remove(); // This is pretty new, in old code bases it was like:
     message.parentElement.removeChild(message);
   });
+
+//? 182 Styles, Attributes and Classes.mp4
+
+// Styles
+// since we already selected the message before, now we just call the methods on it.
+
+message.style.backgroundColor = '#37383d';
+
+message.style.width = '120%'; // now the message is wider and occupies the entire screen.
+// and now if we inspect the element, we will see it has a background color and style.
+
+console.log(message.style.height); // returns empty
+console.log(message.style.backgroundColor); // returns the rgb code
+
+// First CL returns empty because this only works for inline styles that we set
+// ourselves also using the style property.
+// If we really need them:
+console.log(getComputedStyle(message).color);
+console.log(getComputedStyle(message).height);
+
+// message.style.height = getComputedStyle(message).height + 40 + 'px'; // here we are
+// trying to add a string to a number...not gonna work...
+message.style.height =
+  Number.parseFloat(getComputedStyle(message).height, 10) + 30 + 'px';
+
+// This changes the color from green to orangered in all page.
+// document.documentElement.style.setProperty('--color-primary', 'orangered');
+
+// we can use setProperty to set everything. Usually is easier do like "message.style.backgroundColor = '#37383d';"
+
+// Attributes
+
+const logo = document.querySelector('.nav__logo');
+console.log(logo.alt);
+console.log(logo.className);
+
+// Even if we add something to html, if it is non-standard, we get undefined when we
+// try to print it in console.
+console.log(logo.designer); //Non-standard
+
+// If we need to read.
+console.log(logo.getAttribute('designer'));
+
+// we can set them also:
+logo.alt = 'Beautiful minimalist logo'; // now if we inspect, this is in the logo element.
+logo.setAttribute('company', 'Bankist'); // Now if we click on logo and then inspect
+// we see a new company attribute.
+
+//
+console.log(logo.src); // absolute version
+console.log(logo.getAttribute('src')); // relative version
+
+// For a absolute link is the same
+const link = document.querySelector('.twitter-link');
+console.log(link.href);
+console.log(link.getAttribute('href'));
+
+// Now to navigator link
+const link1 = document.querySelector('.nav__link--btn');
+console.log(link1.href);
+console.log(link1.getAttribute('href'));
+
+// Data Attributes
+console.log(logo.dataset.versionNumber); // In the HTML we use - to separate(data-version-number)
+// in JS we must convert to camelCase.
+
+// Classes
+logo.classList.add('class', 'multipleValue'); // we can pass multiple values.
+logo.classList.remove('class');
+logo.classList.toggle('class');
+logo.classList.contains('class');
+
+//* Don't use - this will override all the existing classes and whatever is already there
+//* and also only allows one element.
+//* The methods above allows us to include, exclude and maintain the remaining elements.
+logo.className = 'jonas';
