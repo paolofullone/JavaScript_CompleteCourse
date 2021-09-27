@@ -233,7 +233,7 @@ const startLogOutTimer = function () {
     time--;
   };
   // Setting timer to x minutes
-  let time = 10;
+  let time = 600;
   // Cal the time every second
   tick();
   const timer = setInterval(tick, 1000);
@@ -248,6 +248,12 @@ const startLogOutTimer = function () {
 // And this way, the initial update was also delayed by 1 second, we took the entire
 // function out, made a new tick const, called it before the timer, and then
 // called the timer updating each second.
+
+// Timer reset
+const timerReset = function () {
+  if (timer) clearInterval(timer);
+  timer = startLogOutTimer();
+};
 
 ///////////////////////////////////////
 // Event handlers
@@ -315,8 +321,7 @@ btnLogin.addEventListener('click', function (e) {
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
     // Check if there is a timer, then clear it, then sets the timer.
-    if (timer) clearInterval(timer);
-    timer = startLogOutTimer();
+    timerReset();
     // Update UI
     updateUI(currentAccount);
   }
@@ -348,8 +353,7 @@ btnTransfer.addEventListener('click', function (e) {
     updateUI(currentAccount);
 
     // Reset the timer when a transaction happens;
-    clearInterval(timer);
-    timer = startLogOutTimer();
+    timerReset();
   }
 });
 
@@ -371,8 +375,7 @@ btnLoan.addEventListener('click', function (e) {
       // Update UI
       updateUI(currentAccount);
       // Reset the timer when a transaction happens;
-      clearInterval(timer);
-      timer = startLogOutTimer();
+      timerReset();
     }, 2500);
   }
   inputLoanAmount.value = '';
