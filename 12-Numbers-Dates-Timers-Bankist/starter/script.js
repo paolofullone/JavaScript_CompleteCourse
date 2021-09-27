@@ -207,9 +207,54 @@ const updateUI = function (acc) {
   calcDisplaySummary(acc);
 };
 
+const startLogOutTimer = function () {
+  const tick = function () {
+    const min = String(Math.trunc(time / 60)).padStart(2, 0);
+    const seconds = String(time % 60).padStart(2, 0);
+    /* Baby steps:
+    min = time/60
+    min = Math.trunc(time/60)
+    min = String(Math.trunc(time/60)).padStart(2,0)
+    */
+
+    // In each call, print the remaining time to UI
+    labelTimer.textContent = `${min}:${seconds}`;
+
+    // When the time is 0, stop timer and log out user.
+    if (time === 0) {
+      clearInterval(timer);
+      labelWelcome.textContent = 'Log in to get started';
+      containerApp.style.opacity = 0;
+    }
+    // Decrease 1 second. This has to be after the time===0 check, if it stays before,
+    // When the screen is showing 1, it already logs out, because it will show 1, then
+    // decrease, then check and log out before the new cycle.
+
+    time--;
+  };
+  // Setting timer to x minutes
+  let time = 10;
+  // Cal the time every second
+  tick();
+  const timer = setInterval(tick, 1000);
+  // If we login with 2 users, the timer counts for both of them and overlaps all the
+  // time in the UI, so, we will reset the timer when the user logs in, and with,
+  // this we will eliminate this problem. So we need to return timer in order to access,
+  // it outside this function.
+  return timer;
+};
+
+// we had the "tick" inside the setInterval(tick function, 1000)...
+// And this way, the initial update was also delayed by 1 second, we took the entire
+// function out, made a new tick const, called it before the timer, and then
+// called the timer updating each second.
+
 ///////////////////////////////////////
 // Event handlers
-let currentAccount;
+// we need these variables as global variables in order to use them in multiple functions.
+// timer has to be in the parent scope of the btnLogin function scope.
+
+let currentAccount, timer;
 
 btnLogin.addEventListener('click', function (e) {
   // Prevent form from submitting
@@ -269,7 +314,9 @@ btnLogin.addEventListener('click', function (e) {
     // Clear input fields
     inputLoginUsername.value = inputLoginPin.value = '';
     inputLoginPin.blur();
-
+    // Check if there is a timer, then clear it, then sets the timer.
+    if (timer) clearInterval(timer);
+    timer = startLogOutTimer();
     // Update UI
     updateUI(currentAccount);
   }
@@ -299,6 +346,10 @@ btnTransfer.addEventListener('click', function (e) {
 
     // Update UI
     updateUI(currentAccount);
+
+    // Reset the timer when a transaction happens;
+    clearInterval(timer);
+    timer = startLogOutTimer();
   }
 });
 
@@ -319,6 +370,9 @@ btnLoan.addEventListener('click', function (e) {
       currentAccount.movementsDates.push(new Date().toISOString());
       // Update UI
       updateUI(currentAccount);
+      // Reset the timer when a transaction happens;
+      clearInterval(timer);
+      timer = startLogOutTimer();
     }, 2500);
   }
   inputLoanAmount.value = '';
@@ -355,14 +409,14 @@ btnSort.addEventListener('click', function (e) {
 });
 
 //? LAZY LOGIN
-// inputLoginUsername.value = 'js';
-// inputLoginPin.value = 1111;
-// btnLogin.click();
+inputLoginUsername.value = 'js';
+inputLoginPin.value = 1111;
+btnLogin.click();
 
 //? FAKE LOGIN
-currentAccount = account1;
-updateUI(currentAccount);
-containerApp.style.opacity = 100;
+// currentAccount = account1;
+// updateUI(currentAccount);
+// containerApp.style.opacity = 100;
 
 /////////////////////////////////////////////////
 /////////////////////////////////////////////////
@@ -672,7 +726,7 @@ console.log(
 */
 
 //? 175 Timers_ setTimeout and setInterval.mp4
-
+/*
 // The setTimeout method uses a callback function, here we just passed an arrow function
 // w/o arguments returning a cl.
 // setTimeout(() => console.log('Here is your pizza 🍕'), 2000);
@@ -691,11 +745,13 @@ const pizzaTimer = setTimeout(
 // code for the defined timeout.
 console.log('Code does not stop...');
 
+// Stopping the execution of the code based on a condition.
 if (ingredients.includes('spinach')) clearTimeout(pizzaTimer);
 
 // setInterval => every second the new date is created and logged to console.
-setInterval(function () {
-  const now = new Date();
-  // console.log(`${now.getUTCHours()}:${now.getMinutes()}:${now.getSeconds()}`);
-  console.log(`${now.toLocaleTimeString()}`); // stack overflow 😎
-}, 1000);
+// setInterval(function () {
+//   const now = new Date();
+//   // console.log(`${now.getUTCHours()}:${now.getMinutes()}:${now.getSeconds()}`);
+//   console.log(`${now.toLocaleTimeString()}`); // stack overflow 😎
+// }, 1000);
+*/
