@@ -221,3 +221,52 @@ btnScrollTo.addEventListener('click', function (e) {
   //* Modern way of doing it! Only work in modern browsers.
   section1.scrollIntoView({ behavior: 'smooth' });
 });
+
+//? 184 Types of Events and Event Handlers.mp4
+
+const h1 = document.querySelector('h1');
+
+// h1.addEventListener('mouseenter', function (e) {
+//   alert('addEventListener: Great! You are reading the heading :D');
+// });
+// As we hoover the heading section, the alert window shows up.
+
+// list of events: https://developer.mozilla.org/en-US/docs/Web/Events
+
+// h1.onmouseenter = function (e) {
+//   alert('onmouseenter: Great! You are reading the heading :D');
+// };
+
+// with both of these (addEventListener and h1.onmouseenter) we get now 2 alerts.
+// Nowadays is more common to use addEventListener, h1.onmouseenter is more old school.
+
+// addEventListener allows us to add multiple event listeners to the same event.
+// If we do 2 h1.onmouseenter the 2nd will override the 1st.
+// we can remove an addEventListener if we don't want it anymore.
+
+// Now this way it will alerts each time we enter the heading.
+// const alertH1 = function (e) {
+//   alert('addEventListener: Great! You are reading the heading :D');
+// };
+
+// h1.addEventListener('mouseenter', alertH1);
+
+// Now we removed the event, so we only see it once.
+// const alertH1 = function (e) {
+//   alert('addEventListener: Great! You are reading the heading :D');
+//   h1.removeEventListener('mouseenter', alertH1);
+// };
+
+// h1.addEventListener('mouseenter', alertH1);
+
+// We can even do it after some time
+const alertH1 = function (e) {
+  alert('addEventListener: Great! You are reading the heading :D');
+};
+
+h1.addEventListener('mouseenter', alertH1);
+// Now after 2 seconds it is removed, we can hoover again and nothing will be alerted.
+setTimeout(() => h1.removeEventListener('mouseenter', alertH1), 2000);
+
+// A third way is also possible, however we should not use it...
+// After the head title in the html file we can change <h1> to <h1 onclick="alert('HTML alert')">
