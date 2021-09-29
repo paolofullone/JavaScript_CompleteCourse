@@ -269,4 +269,59 @@ h1.addEventListener('mouseenter', alertH1);
 setTimeout(() => h1.removeEventListener('mouseenter', alertH1), 2000);
 
 // A third way is also possible, however we should not use it...
-// After the head title in the html file we can change <h1> to <h1 onclick="alert('HTML alert')">
+// After the head title in the html file we can change <h1> to <h1 onclick="alert('HTML alert')">ß
+
+//? 185 Event Propagation_ Bubbling and Capturing.mp4
+/*
+when an event happens (click) in a page, we have the capturing phase, the target phase and the bubbling phase, 
+in the capturing phase, even if a click happens in a paragraph as the example, the capture happens in the
+document level, than travels down trough all the parents elements till the target element. After reaching the target the event 
+travels all the way up to the DOCUMENT route again in the bubbling phase, and it again passes trough all the
+parent elements, just the parent, not the siblings. 
+As the event bubbles trough the elements, if we attach the same event listener in two or more elements, we will
+have the same "alert" in both elements, in this case it was an alert.
+By default events can happen in the capturing and bubble phase, but can be setup to work in the target phase
+as well. Some events are created only in the target element, and must be manipulated there.
+*/
+
+// 186 Event Propagation in Practice.mp4
+
+// rgb(255,255,255)
+
+const randomInt = (min, max) =>
+  Math.floor(Math.random() * (max - min + 1) + min);
+const randomColor = () =>
+  `rgb(${randomInt(0, 255)},${randomInt(0, 255)},${randomInt(0, 255)})`;
+console.log(randomColor(0, 255));
+
+document.querySelector('.nav__link').addEventListener('click', function (e) {
+  this.style.backgroundColor = randomColor();
+  //console.log('LINK', e.target, e.currentTarget); // just to see if it works, this one alone works only in the 'Features'
+  // In the event listener, the this keyword points to the element on which that event
+  // handler is attached, in this case: document.querySelector('.nav__link')
+  console.log(e.currentTarget === this);
+  console.log(this);
+
+  // This stops the propagation to parent elements
+  // e.stopPropagation;
+  // This is usually not a good idea, but in case really needed we can use it.
+  // it is a tool that can be used to stop errors in large applications, but not really a good
+  // idea to use it. Maybe to debug?
+});
+
+// In order to test it we need to change the html as:
+// <a class="nav__link" href="#section--1">Features</a>
+// <a class="nav__link" href="#">Features</a>
+// w/o the # it simply reloads the page.
+
+// now let's do the same with the parent element
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  document.querySelector('.nav__links').style.backgroundColor = randomColor();
+  console.log('CONTAINER', e.target, e.currentTarget);
+});
+
+// now let's do the same with the parent element
+document.querySelector('.nav').addEventListener('click', function (e) {
+  this.style.backgroundColor = randomColor();
+  console.log('NAV', e.target, e.currentTarget);
+});
