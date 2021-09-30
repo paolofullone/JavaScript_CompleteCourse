@@ -242,7 +242,7 @@ nav.addEventListener('mouseover', handleHoover.bind(0.5));
 nav.addEventListener('mouseout', handleHoover.bind(1));
 
 //? 191 Implementing a Sticky Navigation_ The Scroll Event.mp4
-
+/*
 // Sticky navigation
 const initialCoords = section1.getBoundingClientRect();
 // console.log(initialCoords); // when we reload the page, the top is the distance between the beginning of the page and the beginning of 1st section.
@@ -257,6 +257,112 @@ window.addEventListener('scroll', function () {
 });
 
 // This solution in a modern computer works fine, however in an old mobile will not perform well.
+*/
+
+//? 192 A Better Way_ The Intersection Observer API.mp4
+/*
+const obsCallback = function (entries, observer) {
+  entries.forEach(entry => {
+    console.log(entry);
+  });
+};
+
+const obsOptions = {
+  root: null,
+  threshold: 0.1,
+};
+
+const observer = new IntersectionObserver(obsCallback, obsOptions);
+observer.observe(section1);
+*/
+// The callback function (obsCallback) is called each time the observe element (section1) is intersecting the root element and the threshold we define.
+// So if we explore this code a little bit, we will see that no matter if we are scrolling down or up, the event will be triggered when scrolled 10%.
+// We can explore the IntersectionObserverEntry generated and see the intersectionRatio property. When scrolling down the isIntersecting property is true,
+// scrolling up it is false.
+/*
+const obsCallback = function (entries, observer) {
+  entries.forEach(entry => {
+    console.log(entry);
+  });
+};
+
+const obsOptions = {
+  root: null,
+  threshold: [0, 0.2], // 0% here means that the callback will trigger each time the target element moves completely out of the view and also as soon as it enters the view.
+};
+
+const observer = new IntersectionObserver(obsCallback, obsOptions);
+observer.observe(section1);
+*/
+
+// When the header is no longer shown in screen (scrolls completely out of view) we want the navigation to become fixed.
+
+const header = document.querySelector('.header');
+const navHeight = nav.getBoundingClientRect().height; // get the navHeight dynamically in order to have a responsive web site.
+// console.log(navHeight); //
+
+const stickyNav = function (entries) {
+  const [entry] = entries; // same as write entry(0)
+  // console.log(entry);
+  if (!entry.isIntersecting) nav.classList.add('sticky');
+  // when the target is NOT intersecting the route we wan't to apply the stick class.
+  else nav.classList.remove('sticky');
+};
+
+const headerObserver = new IntersectionObserver(stickyNav, {
+  root: null, // we are once again interested in the entire viewport.
+  threshold: 0, // when 0% of the header is visible, we want something to happen.
+  rootMargin: `-${navHeight}px`, // this will apply a 90 pixels box that will be applied outside the target element. So the navigation will appear before the line reaches
+  // the top of the page. To avoid the overlap.
+});
+headerObserver.observe(header);
+
+//? 193 Revealing Elements on Scroll.mp4
+
+// first we added the class "section section--hidden" to all sections.
+// now we will remove it as we approach the sections.
+// in the css file, we have a section--hidden with opacity = 0 and 8rem distance that will be removed and the page will come a little bit up.
+
+// Reveal sections
+/*
+//* To construct the block of code this is the sequence.
+
+const alSections = document.querySelectorAll('.section'); // 3
+
+const revealSection = function (entries, observer) {}; // 2
+
+const sectionObserver = new IntersectionObserver(revealSection, {}); //1
+
+allSections.forEach(function (section) { //4
+  observer.observe(section) //5
+});
+*/
+
+const allSections = document.querySelectorAll('.section'); //3
+
+const revealSection = function (entries, observer) {
+  //2
+  const [entry] = entries; //7
+  console.log(entry); // 7
+  if (!entry.isIntersecting) return; // 9 - //* when we load the page, it is already triggered a intersectionObserverEntry where we don't have an intersection
+  //* yet, however the target is section 1 and it removes the section hidden from it. So we need this line of code to return the function immediately and not
+  //* remove the section--hidden classList.
+  entry.target.classList.remove('section--hidden'); // 8
+  observer.unobserve(entry.target); // 9 - As we keep scrolling the observer keeps observing the events, but they're no longer necessary. This will stop them and
+  // will be a little bit better for the performance.
+};
+
+const sectionObserver = new IntersectionObserver(revealSection, {
+  //1
+  root: null, //5
+  threshold: 0.15, //6 - this will display the section once it is at least 15% on the screen.
+});
+
+allSections.forEach(function (section) {
+  // 4
+  sectionObserver.observe(section);
+  section.classList.add('section--hidden'); // since we are already looping trough the sections, lets include the section--hidden using JS
+});
 
 ///////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
