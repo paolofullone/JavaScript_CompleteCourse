@@ -6,6 +6,7 @@ const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const btnScrollTo = document.querySelector('.btn--scroll-to');
 const section1 = document.querySelector('#section--1');
+const h1 = document.querySelector('h1');
 
 ///////////////////////////////////////
 // Modal window
@@ -262,7 +263,7 @@ logo.className = 'jonas';
 */
 
 //? 184 Types of Events and Event Handlers.mp4
-
+/*
 const h1 = document.querySelector('h1');
 
 // h1.addEventListener('mouseenter', function (e) {
@@ -309,6 +310,7 @@ setTimeout(() => h1.removeEventListener('mouseenter', alertH1), 2000);
 
 // A third way is also possible, however we should not use it...
 // After the head title in the html file we can change <h1> to <h1 onclick="alert('HTML alert')">ß
+*/
 
 //? 185 Event Propagation_ Bubbling and Capturing.mp4
 /*
@@ -363,5 +365,48 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
 document.querySelector('.nav').addEventListener('click', function (e) {
   this.style.backgroundColor = randomColor();
   console.log('NAV', e.target, e.currentTarget);
+});
+*/
+
+//? 188 DOM Traversing.mp4
+/*
+// From the h1 element (When banking meets minimalist) we will go downwards, upwards and sideways.
+
+// Going downwards: child of h1 element.
+console.log(h1.querySelectorAll('.highlight')); // Got this from inspector. These are the two green ones.
+console.log(h1.childNodes); // here we get text, elements, comments... gives every single node of every single type
+console.log(h1.children); // this gives a html collection (that is live updated) and work only for direct children.
+h1.firstElementChild.style.color = 'fuchsia';
+h1.lastElementChild.style.color = 'lime';
+
+// Going upwards: parents
+console.log('---Parents---');
+console.log(h1.parentNode);
+console.log(h1.parentElement); //usually we are interested in this one, in this case is simply the same :(
+
+// Find a parent element, no matter how far away it is on DOM tree.
+h1.closest('.header').style.background = 'var(--gradient-secondary)'; // the 'var(--gra...) is a css variable that
+// we used here to change the background color.
+
+h1.closest('h1').style.background = 'var(--gradient-primary)'; // the closest of h1 is h1 itself.
+
+//* CLOSEST is the OPPOSITE of querySelector. CLOSEST find parents elements, the querySelector finds children elements.
+
+// Going Sideways: siblings
+console.log('---Siblings---');
+console.log(h1.previousElementSibling); // theres no Sibling to h1 indeed.
+console.log(h1.nextElementSibling); // the h4 element is the one that comes after the h1 in this page.
+
+console.log(h1.previousSibling); // Not very important, we will be working with elements most of the time.
+console.log(h1.nextSibling);
+
+// If we really need all siblings, we need to go to parent and read all children from there.
+console.log('---All the siblings (including itself)---');
+console.log(h1.parentElement.children);
+
+// The HTML collection is not an array, but still we can create an array using the spread operator.
+// Let's say we want to scale all the sibling elements of h1 to 50% scale image size:
+[...h1.parentElement.children].forEach(function (el) {
+  if (el !== h1) el.style.transform = 'scale(0.5)';
 });
 */
