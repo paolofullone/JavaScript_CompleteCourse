@@ -1,12 +1,14 @@
 'use strict';
 
-///////////////////////////////////////
-// Modal window
-
 const modal = document.querySelector('.modal');
 const overlay = document.querySelector('.overlay');
 const btnCloseModal = document.querySelector('.btn--close-modal');
 const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
+const btnScrollTo = document.querySelector('.btn--scroll-to');
+const section1 = document.querySelector('#section--1');
+
+///////////////////////////////////////
+// Modal window
 
 const openModal = function (e) {
   e.preventDefault(); // this avoids the page to jump when we click in a button
@@ -30,6 +32,92 @@ document.addEventListener('keydown', function (e) {
     closeModal();
   }
 });
+
+////////////////////////////////////////////////////////////////
+
+//? 183 Implementing Smooth Scrolling.mp4
+
+btnScrollTo.addEventListener('click', function (e) {
+  const s1coords = section1.getBoundingClientRect();
+  console.log(s1coords);
+  console.log(e.target.getBoundingClientRect());
+  console.log('Current Scroll (X,Y)', window.scrollX, window.scrollY);
+  console.log(
+    'Height and Width of viewport',
+    document.documentElement.clientHeight,
+    document.documentElement.clientWidth
+  );
+  //* getBoundingClientRect returns a DOMRect which is relative to the position of the page
+  // in the moment it is executed, it returns the x and y coordinates, x is the distance
+  // of the element to the left side of the page and y the distance to the top of the page.
+  //* The BoundingClient is relative to the viewport of the page.
+  //* The scrollX and scrollY shows the relative position of the button after the scroll
+  // of the page. So it's also dynamic. Before any scroll it is 0, 0.
+  //* clientHeight and With shows the relative size of the viewport, now if we change the
+  // size of the window (increase cl area for example) it will change the size of the
+  // viewport.
+
+  //* Scrolling
+  // window.scrollTo(s1coords.left, s1coords.top); // So if we leave like this, it
+  // will only work before scrolling the page, because when we do scroll, the s1coords
+  // change, and it will move only the new relative position.
+
+  // window.scrollTo(
+  //   s1coords.left + window.scrollX,
+  //   s1coords.top + window.scrollY
+  // );
+
+  // with this one we add the scrolled portion to the s1 new relative coords,
+  // so it works anywhere in the page (this one we don't have x scroll, just for the
+  // sake of completion.)
+  //* Old School!
+
+  // window.scrollTo({
+  //   left: s1coords.left + window.scrollX,
+  //   top: s1coords.top + window.scrollY,
+  //   behavior: 'smooth',
+  // });
+
+  //* Modern way of doing it! Only work in modern browsers.
+  section1.scrollIntoView({ behavior: 'smooth' });
+});
+
+////////////////////////////////////////////////////////////////
+//? 187 Event Delegation_ Implementing Page Navigation.mp4
+// Page Navigation
+
+// Now we selected all buttons at once, and added a callback function inside the callback function.
+// document.querySelectorAll('.nav__link').forEach(function (el) {
+//   el.addEventListener('click', function (e) {
+//     // console.log(`LINK`);
+//     e.preventDefault(); // this prevents the links to anchors in the page to work, with this command nothing happens when we click in the buttons.
+//     const id = this.getAttribute('href'); // getAttribute returns only #section--1(2 or 3), this.href returns the entire url.
+//     // console.log(this.href);
+//     // console.log(this.getAttribute('href'));
+//     // Scrolling smoothly to the anchor.
+//     document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+//   });
+// });
+// The problem with the above solution is that we are implementing the click callback function to all elements in the page, here it's only 2 elements
+// than it should be fine, however if we have like 10.000 elements we will have performance issues. So we will apply the bubbling up technique.
+
+// Event delegation:
+// 1.  Add event listener to common parent element.
+// 2.  Determine what element originated the event.
+
+document.querySelector('.nav__links').addEventListener('click', function (e) {
+  console.log(e.target); // if we click on the elements we see which one was clicked, however if we click no the area between them, we see a
+  // "nav__links", that is not relevant at all.
+
+  //* Matching strategy => This is the most important part of implementing event delegation.
+  if (e.target.classList.contains('nav__link')) {
+    console.log('LINK'); // when we click in the middle we don't get link...
+    e.preventDefault(); // this prevents the links to anchors in the page to work, with this command nothing happens when we click in the buttons.
+    const id = e.target.getAttribute('href');
+    document.querySelector(id).scrollIntoView({ behavior: 'smooth' });
+  }
+});
+
 ////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 //? 181 Selecting, Creating, and Deleting Elements.mp4
@@ -172,55 +260,6 @@ logo.classList.contains('class');
 //* The methods above allows us to include, exclude and maintain the remaining elements.
 logo.className = 'jonas';
 */
-//? 183 Implementing Smooth Scrolling.mp4
-
-const btnScrollTo = document.querySelector('.btn--scroll-to');
-const section1 = document.querySelector('#section--1');
-
-btnScrollTo.addEventListener('click', function (e) {
-  const s1coords = section1.getBoundingClientRect();
-  console.log(s1coords);
-  console.log(e.target.getBoundingClientRect());
-  console.log('Current Scroll (X,Y)', window.scrollX, window.scrollY);
-  console.log(
-    'Height and Width of viewport',
-    document.documentElement.clientHeight,
-    document.documentElement.clientWidth
-  );
-  //* getBoundingClientRect returns a DOMRect which is relative to the position of the page
-  // in the moment it is executed, it returns the x and y coordinates, x is the distance
-  // of the element to the left side of the page and y the distance to the top of the page.
-  //* The BoundingClient is relative to the viewport of the page.
-  //* The scrollX and scrollY shows the relative position of the button after the scroll
-  // of the page. So it's also dynamic. Before any scroll it is 0, 0.
-  //* clientHeight and With shows the relative size of the viewport, now if we change the
-  // size of the window (increase cl area for example) it will change the size of the
-  // viewport.
-
-  //* Scrolling
-  // window.scrollTo(s1coords.left, s1coords.top); // So if we leave like this, it
-  // will only work before scrolling the page, because when we do scroll, the s1coords
-  // change, and it will move only the new relative position.
-
-  // window.scrollTo(
-  //   s1coords.left + window.scrollX,
-  //   s1coords.top + window.scrollY
-  // );
-
-  // with this one we add the scrolled portion to the s1 new relative coords,
-  // so it works anywhere in the page (this one we don't have x scroll, just for the
-  // sake of completion.)
-  //* Old School!
-
-  // window.scrollTo({
-  //   left: s1coords.left + window.scrollX,
-  //   top: s1coords.top + window.scrollY,
-  //   behavior: 'smooth',
-  // });
-
-  //* Modern way of doing it! Only work in modern browsers.
-  section1.scrollIntoView({ behavior: 'smooth' });
-});
 
 //? 184 Types of Events and Event Handlers.mp4
 
@@ -285,7 +324,7 @@ as well. Some events are created only in the target element, and must be manipul
 */
 
 // 186 Event Propagation in Practice.mp4
-
+/*
 // rgb(255,255,255)
 
 const randomInt = (min, max) =>
@@ -325,3 +364,4 @@ document.querySelector('.nav').addEventListener('click', function (e) {
   this.style.backgroundColor = randomColor();
   console.log('NAV', e.target, e.currentTarget);
 });
+*/
