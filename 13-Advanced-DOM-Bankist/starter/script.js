@@ -7,6 +7,10 @@ const btnsOpenModal = document.querySelectorAll('.btn--show-modal');
 const btnScrollTo = document.querySelector('.btn--scroll-to');
 const section1 = document.querySelector('#section--1');
 const h1 = document.querySelector('h1');
+const tabs = document.querySelectorAll('.operations__tab');
+const tabsContainer = document.querySelector('.operations__tab-container');
+const tabsContent = document.querySelectorAll('.operations__content');
+const nav = document.querySelector('.nav');
 
 ///////////////////////////////////////
 // Modal window
@@ -119,7 +123,127 @@ document.querySelector('.nav__links').addEventListener('click', function (e) {
   }
 });
 
-////////////////////////////////////////////////////////////////
+//? 189 Building a Tabbed Component.mp4
+
+// Tabbed component
+
+// We could do it like this...
+// tabs.forEach(t => t.addEventListener('click', () => console.log('TAB')));
+// but then we are attaching the callback function to each tab, not desirable at all due to performance issues with many tabs.
+
+// So let's use event delegation, and we must attach the event handler on the common parent element. In this case, the TABS container.
+tabsContainer.addEventListener('click', function (e) {
+  // we need the event to know which button was clicked.
+  // const clicked = e.target; // if we let it like this, when we click on the numbers (01, 02 or 03) we get a span instead of button.
+  // const clicked = e.target.parentElement; // this way we get the parent element if we click on the number, but also get the parent element if we click on
+  // the button. Which is not what we want.
+
+  // const clicked = e.target.closest('.operations__tab');
+  // console.log(clicked);
+  // clicked.classList.add('operations__tab--active');
+  // Right now, if we click on the container but outside any button we het e null element, because there's no parent with this class.
+
+  const clicked = e.target.closest('.operations__tab'); // this moves the button up
+  // console.log(clicked);
+  // Guard clause
+  if (!clicked) return; //* => when nothing is clicked, we will immediately finish this function.
+
+  // Remove classes for both the tab and content area.
+  tabs.forEach(t => t.classList.remove('operations__tab--active')); // when we click we will remove the active tab of all tabs and then add it in the clicked.
+  tabsContent.forEach(c => c.classList.remove('operations__content--active')); // this will avoid show 3 classes at the same time if we click on all them.
+  // Active tab
+  clicked.classList.add('operations__tab--active');
+
+  // Activate content area
+  // console.log(clicked.dataset.tab); // get the index of clicked button.
+  document
+    .querySelector(`.operations__content--${clicked.dataset.tab}`)
+    .classList.add('operations__content--active');
+});
+
+//* The WHOLE idea of build components like this is to just add and remove classes as necessary to manipulate the content to our need.
+
+//? 190 Passing Arguments to Event Handlers.mp4
+// Menu fade animation
+/*
+nav.addEventListener('mouseover', function (e) {
+  if (e.target.classList.contains('nav__link')) {
+    // in this case no need to use the closest, we do not have anything else we could accidentally click in this link (child elements).
+    const link = e.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link'); // Each nav__link is inside a nav__item and even upper we have the nav, so we use closest to find it.
+    // In this part of the code: link.closest('.nav') we go to the parent element, then we will search for all the siblings with .querySelector
+    const logo = link.closest('.nav').querySelector('img'); // searching for the logo, this selector works for any image which has the image tag.
+
+    siblings.forEach(el => {
+      if (el !== link) el.style.opacity = 0.5; // if not the one i'm choosing, set opacity to 0.5
+    });
+    logo.style.opacity = 0.5;
+  }
+});
+
+nav.addEventListener('mouseout', function (e) {
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+
+    siblings.forEach(el => {
+      if (el !== link) el.style.opacity = 1;
+    });
+    logo.style.opacity = 1;
+  }
+});
+*/
+
+// mouseover is the opposite of mouseout, the opposite of mouseenter is mouseleave. we use them to undo something we did.
+
+// Replacing everything above with a function:
+/*
+const handleHoover = function (e, opacity) {
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+
+    siblings.forEach(el => {
+      if (el !== link) el.style.opacity = opacity;
+    });
+    logo.style.opacity = opacity;
+  }
+};
+
+// Then we could call:
+nav.addEventListener('mouseover', function (e) {
+  handleHoover(e, 0.5);
+});
+
+nav.addEventListener('mouseout', function (e) {
+  handleHoover(e, 1);
+});
+*/
+// This will work, but a better solution is to use the this keyword.
+
+const handleHoover = function (e) {
+  // took opacity out
+  if (e.target.classList.contains('nav__link')) {
+    const link = e.target;
+    const siblings = link.closest('.nav').querySelectorAll('.nav__link');
+    const logo = link.closest('.nav').querySelector('img');
+
+    siblings.forEach(el => {
+      if (el !== link) el.style.opacity = this; // replaced opacity with this
+    });
+    logo.style.opacity = this; // replaced opacity with this
+  }
+};
+
+// Then we could call using the bind method that returns a new function:
+nav.addEventListener('mouseover', handleHoover.bind(0.5));
+nav.addEventListener('mouseout', handleHoover.bind(1));
+
+//? 191 Implementing a Sticky Navigation_ The Scroll Event.mp4
+
+///////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 //? 181 Selecting, Creating, and Deleting Elements.mp4
 /*
