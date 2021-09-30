@@ -243,6 +243,21 @@ nav.addEventListener('mouseout', handleHoover.bind(1));
 
 //? 191 Implementing a Sticky Navigation_ The Scroll Event.mp4
 
+// Sticky navigation
+const initialCoords = section1.getBoundingClientRect();
+// console.log(initialCoords); // when we reload the page, the top is the distance between the beginning of the page and the beginning of 1st section.
+
+window.addEventListener('scroll', function () {
+  // console.log(e); // with the smallest scroll lots of events are triggered, so it is not really efficient.
+  console.log(window.scrollY);
+  if (window.scrollY > initialCoords.top) nav.classList.add('sticky');
+  // after the scroll passes the distance between the top and first section, it will
+  // sticky the menu bar.
+  else nav.classList.remove('sticky');
+});
+
+// This solution in a modern computer works fine, however in an old mobile will not perform well.
+
 ///////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 //? 181 Selecting, Creating, and Deleting Elements.mp4
