@@ -361,7 +361,7 @@ const sectionObserver = new IntersectionObserver(revealSection, {
 allSections.forEach(function (section) {
   // 4
   sectionObserver.observe(section);
-  section.classList.add('section--hidden'); // since we are already looping trough the sections, lets include the section--hidden using JS
+  // section.classList.add('section--hidden'); // since we are already looping trough the sections, lets include the section--hidden using JS
 });
 
 //? 194 Lazy Loading Images.mp4
@@ -403,6 +403,59 @@ const imgObserver = new IntersectionObserver(loadImg, {
 });
 
 imgTargets.forEach(img => imgObserver.observe(img)); //3
+
+//? 195 Building a Slider Component_ Part 1.mp4
+
+// Slider
+const slides = document.querySelectorAll('.slide');
+const btnLeft = document.querySelector('.slider__btn--left');
+const btnRight = document.querySelector('.slider__btn--right');
+let curSlide = 0;
+const maxSlide = slides.length; // w/o this JS will keep moving forward even if the slides already finished.
+
+// Just to see all images on screen while developing.
+// const slider = document.querySelector('.slider');
+// slider.style.transform = 'scale(0.35) translateX(-400px)';
+// slider.style.overflow = 'visible';
+
+const goToSlide = function (slide) {
+  slides.forEach(
+    (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
+  );
+};
+
+goToSlide(0);
+// Refactored the function:
+// slides.forEach((s, i) => (s.style.transform = `translateX(${100 * i}%)`));
+// first slide (index0) at 0%, 2nd (index1) 100%, 3rd (index2) 200%. 4th (index3) 300%
+// The only difference is that goToSlide uses 1-slide, in this case 0, 1-0 = 1
+
+// Go to next slide
+const nextSlide = function () {
+  if (curSlide === maxSlide - 1) {
+    // if the slide reaches the final position and the user clicks again in the
+    // left button, it will go back to first image setting the curSlide to 0.
+    curSlide = 0;
+  } else {
+    curSlide++;
+  }
+  goToSlide(curSlide);
+  // when we move the first slide we want:
+  // first slide(index0) at - 100 %, 2nd(index1) 0 %, 3rd(index2) 100 %. 4th(index3) 200 %
+  // then curSlide will be 1, so 0-1 = 1, 1-1 = 0, 2-1 = 1, 3-1 = 2;
+};
+
+const prevSlide = function () {
+  if (curSlide === 0) {
+    curSlide = maxSlide - 1;
+  } else {
+    curSlide--;
+  }
+  goToSlide(curSlide);
+};
+
+btnRight.addEventListener('click', nextSlide);
+btnLeft.addEventListener('click', prevSlide);
 
 ///////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
