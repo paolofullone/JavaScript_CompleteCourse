@@ -407,56 +407,115 @@ imgTargets.forEach(img => imgObserver.observe(img)); //3
 //? 195 Building a Slider Component_ Part 1.mp4
 
 // Slider
-const slides = document.querySelectorAll('.slide');
-const btnLeft = document.querySelector('.slider__btn--left');
-const btnRight = document.querySelector('.slider__btn--right');
-let curSlide = 0;
-const maxSlide = slides.length; // w/o this JS will keep moving forward even if the slides already finished.
+// Now in the refactoring, we will put everything we did into one function, in order no not pollute the global namespace:
+const sliders = function () {
+  const slides = document.querySelectorAll('.slide');
+  const btnLeft = document.querySelector('.slider__btn--left');
+  const btnRight = document.querySelector('.slider__btn--right');
+  let curSlide = 0;
+  const maxSlide = slides.length; // w/o this JS will keep moving forward even if the slides already finished.
+  const dotContainer = document.querySelector('.dots');
 
-// Just to see all images on screen while developing.
-// const slider = document.querySelector('.slider');
-// slider.style.transform = 'scale(0.35) translateX(-400px)';
-// slider.style.overflow = 'visible';
+  // Just to see all images on screen while developing.
+  // const slider = document.querySelector('.slider');
+  // slider.style.transform = 'scale(0.35) translateX(-400px)';
+  // slider.style.overflow = 'visible';
 
-const goToSlide = function (slide) {
-  slides.forEach(
-    (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
-  );
+  //* Functions:
+  const createDots = function () {
+    slides.forEach(function (_, i) {
+      // since here we don't need the slide, we will use _ instead of s.
+      dotContainer.insertAdjacentHTML(
+        'beforeend',
+        `<button class="dots__dot" data-slide="${i}"></button>`
+      );
+    });
+  };
+
+  const activateDot = function (slide) {
+    // removing all dots (to change the color of the active.)
+    document
+      .querySelectorAll('.dots__dot')
+      .forEach(dot => dot.classList.remove('dots__dot--active'));
+
+    // changing the color of the active one:
+    document
+      .querySelector(`.dots__dot[data-slide="${slide}"]`)
+      .classList.add('dots__dot--active');
+  };
+
+  const goToSlide = function (slide) {
+    slides.forEach(
+      (s, i) => (s.style.transform = `translateX(${100 * (i - slide)}%)`)
+    );
+  };
+
+  // Refactored the function:
+  // slides.forEach((s, i) => (s.style.transform = `translateX(${100 * i}%)`));
+  // first slide (index0) at 0%, 2nd (index1) 100%, 3rd (index2) 200%. 4th (index3) 300%
+  // The only difference is that goToSlide uses 1-slide, in this case 0, 1-0 = 1
+
+  // Go to next slide
+  const nextSlide = function () {
+    if (curSlide === maxSlide - 1) {
+      // if the slide reaches the final position and the user clicks again in the
+      // left button, it will go back to first image setting the curSlide to 0.
+      curSlide = 0;
+    } else {
+      curSlide++;
+    }
+    goToSlide(curSlide);
+    // when we move the first slide we want:
+    // first slide(index0) at - 100 %, 2nd(index1) 0 %, 3rd(index2) 100 %. 4th(index3) 200 %
+    // then curSlide will be 1, so 0-1 = 1, 1-1 = 0, 2-1 = 1, 3-1 = 2;
+    activateDot(curSlide);
+  };
+
+  const prevSlide = function () {
+    if (curSlide === 0) {
+      curSlide = maxSlide - 1;
+    } else {
+      curSlide--;
+    }
+    goToSlide(curSlide);
+    activateDot(curSlide);
+  };
+
+  const init = function () {
+    goToSlide(0);
+    createDots();
+    activateDot(0); // to start the page with the first dot active.
+  };
+  init();
+
+  //* Event handlers
+  btnRight.addEventListener('click', nextSlide);
+  btnLeft.addEventListener('click', prevSlide);
+
+  document.addEventListener('keydown', function (e) {
+    // console.log(e); // this shows us the keys pressed so we can take the key to access them.
+    if (e.key === 'ArrowLeft') prevSlide(); // using if
+    e.key === 'ArrowRight' && nextSlide(); // using short circuit
+  });
+
+  // Using event delegation to make the dots change the images.
+  dotContainer.addEventListener('click', function (e) {
+    if (e.target.classList.contains('dots__dot')) {
+      // console.log('DOTS');
+      // const slide = e.target.dataset.slide;
+      const { slide } = e.target.dataset; // this DATASET is because all the custom data
+      // attributes are in the dataset and then . the value, in this case .slide
+      goToSlide(slide);
+      activateDot(slide);
+    }
+  });
+  /*
+  const slide = e.target.dataset.slide; is the same of: 
+  const { slide } = e.target.dataset; 
+  so, in the 2nd one we used destructuring.
+  */
 };
-
-goToSlide(0);
-// Refactored the function:
-// slides.forEach((s, i) => (s.style.transform = `translateX(${100 * i}%)`));
-// first slide (index0) at 0%, 2nd (index1) 100%, 3rd (index2) 200%. 4th (index3) 300%
-// The only difference is that goToSlide uses 1-slide, in this case 0, 1-0 = 1
-
-// Go to next slide
-const nextSlide = function () {
-  if (curSlide === maxSlide - 1) {
-    // if the slide reaches the final position and the user clicks again in the
-    // left button, it will go back to first image setting the curSlide to 0.
-    curSlide = 0;
-  } else {
-    curSlide++;
-  }
-  goToSlide(curSlide);
-  // when we move the first slide we want:
-  // first slide(index0) at - 100 %, 2nd(index1) 0 %, 3rd(index2) 100 %. 4th(index3) 200 %
-  // then curSlide will be 1, so 0-1 = 1, 1-1 = 0, 2-1 = 1, 3-1 = 2;
-};
-
-const prevSlide = function () {
-  if (curSlide === 0) {
-    curSlide = maxSlide - 1;
-  } else {
-    curSlide--;
-  }
-  goToSlide(curSlide);
-};
-
-btnRight.addEventListener('click', nextSlide);
-btnLeft.addEventListener('click', prevSlide);
-
+sliders();
 ///////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
 //? 181 Selecting, Creating, and Deleting Elements.mp4
