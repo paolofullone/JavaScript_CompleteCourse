@@ -343,7 +343,7 @@ const allSections = document.querySelectorAll('.section'); //3
 const revealSection = function (entries, observer) {
   //2
   const [entry] = entries; //7
-  console.log(entry); // 7
+  // console.log(entry); // 7
   if (!entry.isIntersecting) return; // 9 - //* when we load the page, it is already triggered a intersectionObserverEntry where we don't have an intersection
   //* yet, however the target is section 1 and it removes the section hidden from it. So we need this line of code to return the function immediately and not
   //* remove the section--hidden classList.
@@ -363,6 +363,46 @@ allSections.forEach(function (section) {
   sectionObserver.observe(section);
   section.classList.add('section--hidden'); // since we are already looping trough the sections, lets include the section--hidden using JS
 });
+
+//? 194 Lazy Loading Images.mp4
+// This effect really impacts on performance of the site, it has a good impact on users who might have a bad internet connection.
+const imgTargets = document.querySelectorAll('img[data-src]'); //1 selecting all images that has a special attribute called data-source, some images will be lazy loaded,
+// others won't, the logo, a small picture in the end of the page etc won't be lazy loaded. In the css file we can see that this attribute sets
+// a blur in the image, otherwise it would like really ugly the page. And the special data-src attribute was already added in the html file.
+// console.log(imgTargets);
+
+// const loadImg = function (entries, observer) {}; //4
+const loadImg = function (entries, observer) {
+  //4
+  const [entry] = entries; //6
+  // console.log(entry); //6
+
+  // same guard clause as used before
+  if (!entry.isIntersecting) return; //7 this will stop the isIntersecting after the 1st intersection of each image.
+
+  // replace the src with data-src
+  entry.target.src = entry.target.dataset.src; //8 this replaces the digital-lazy.jpg by the digital.jpg in the html.
+  // when we do it, JS will find the new image that it should load and display it in the page, it is done behind the scenes. Once it's finished
+  // JS will emit the 'load' event, that we are going to listen to remove the blur class.
+
+  // Removing the blur class
+  entry.target.addEventListener('load', function () {
+    //9
+    entry.target.classList.remove('lazy-img'); //10 in a fast connection we could remove the image immediately after changing the image from lazy
+    // to high res image. However if we go to 'network' tab in the console and simulate slow3g we will see the difference.
+  });
+  observer.unobserve(entry.target); //11 now we can stop observing the images.
+};
+
+// const imgObserver = new IntersectionObserver(loadImg, {}); //2
+const imgObserver = new IntersectionObserver(loadImg, {
+  //2
+  root: null, //5
+  threshold: 0, //5
+  rootMargin: '200px', //12 let's load the image before the user reaches the image, if we set to -200 we will see it loading as we approach the images.
+});
+
+imgTargets.forEach(img => imgObserver.observe(img)); //3
 
 ///////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////
