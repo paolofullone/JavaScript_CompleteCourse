@@ -807,3 +807,50 @@ console.log(h1.parentElement.children);
   if (el !== h1) el.style.transform = 'scale(0.5)';
 });
 */
+
+//? 197 Lifecycle DOM Events
+
+// The lifecycle of the page begins when the user enters the page and finishes as he leaves the page.
+
+document.addEventListener('DOMContentLoaded', function (e) {
+  // fired upon the HTML read
+  console.log('HTML parsed and DOM tree built.', e);
+});
+
+// Set the Network to 3g and check the time load etc.
+
+// since our html calls the script.js in the end of the file, the content of the js will be read
+// when the rest of the HTML is already parsed. So we don't need to wrap our entire code into a
+// function  waiting from the DOMContentLoaded finishes.
+
+// The load event is fired not only when the html file is loaded, but also the images and external
+// resources like CSS files are also loaded. Basically when the complete page gets loaded.
+
+window.addEventListener('load', function (e) {
+  console.log('Page fully loaded', e);
+});
+
+// window.addEventListener('beforeunload', function (e) {
+//   e.preventDefault(); // some browsers require this preventDefault to work, chrome doesn't.
+//   console.log(e);
+//   e.returnValue = ''; // for historical reasons we must set the returnValue to an empty string
+// in order to show a pop up when whe user tries to close the page. Long time ago was possible
+// to customize the message, nowadays only the generic message is displayed.
+//
+
+//? 198 Efficient Script Loading_ defer and async
+
+/* The script can be loaded in the end of the body using <script src="script.js"></script>
+Or it can be read in the head using ASYNC or DEFER. NEVER read in the head using SRC only.
+If we put it in the head with src, the browser will stop loading the html, then will read
+the script and then continue to read the html, which is not very smart nor has a good performance.
+
+Async loads the scripts and does not guarantee the execution of them in order, it loads together 
+with the HTML of the page.
+
+Defer loads the scripts in the order declared and executes them in the defined order.
+
+In my computer it took 1.94s to load the DOM with scr in the end of the HTML and 1.27s to load 
+in the head with defer src.
+
+*/
