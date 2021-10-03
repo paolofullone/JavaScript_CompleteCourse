@@ -88,3 +88,52 @@ console.log(paolo.hasOwnProperty('species'));
 //? 205 Prototypal Inheritance and The Prototype Chain.mp4
 
 // PROTOTYPE CHAIN is very similar to SCOPE CHAIN.
+
+//? 206 Prototypal Inheritance on Built-In Objects.mp4
+
+console.log('--- Prototypes ---');
+console.log(paolo.__proto__);
+// Object.prototype is the top of the prototype chain.
+console.log(paolo.__proto__.__proto__); // this is the prototype property of object. We can see that the constructor is the object.
+// and we also can see that the object has the hasOwnProperty()
+// Since object.prototype is the top of the prototype chain, this is null:
+console.log(paolo.__proto__.__proto__.__proto__);
+
+console.log('');
+console.log(Person.prototype.constructor); // This returns the function.
+console.dir(Person.prototype.constructor); // Now we can inspect the function.
+
+console.log('--- Array Prototype ---');
+const arr = [3, 4, 5, 6, 7, 3, 4, 5, 6];
+console.log(arr.__proto__); // So we can see that all of the methods we studied (pop, push, fill, sort, splice...) are available because
+// each array inherits these methods from it's prototype.
+
+console.log(arr.__proto__ === Array.prototype); //* The prototype property of the constructor (Array.prototype) is gonna be the prototype
+//* off al the objects created by that constructor (arr.__proto__)
+//* Whenever we use [] to create an array, behind the scenes JS will grant access to all Array prototypes to the new object array.
+
+console.log(arr.__proto__.__proto__); // Now we are back to having object.prototype, this one has hasOwnProperty and all the other methods
+// available for objects while arr.__proto__ does not have. And this is simply because the prototype itself (arr.__proto__) is an object.
+// And any object has access to all of these methods.
+
+//* So the prototype is a mechanism of reuse code. So all the methods of an array has to exist in only one place in JS.
+
+//* Using that knowledge we can extend the arrays methods ADDING A NEW METHOD for example:
+Array.prototype.unique = function () {
+  return [...new Set(this)]; // new Set will return all unique values, with argument 'this' we set the array, then we spread it with ... and
+  // encapsulate everything in a array with []
+};
+// Now we can use it in all the arrays...
+console.log(arr.unique());
+
+//! It is NOT a good idea to add methods to native functions for many reasons. The next version of JS can include a method with the same
+//! name and a different functionality, the code will use the new method and probably break the code.
+//! Another reason is if the project involves more a team of programers if two uses the same name it will create so many bugs...
+
+const h1 = document.querySelector('h1');
+console.dir(h1); // as we can see the Prototype in the end of the object is a HTMLHeadingElement and if we expand it we get another prototype
+// with HTMLElement that we studied in the beginning of the DOM section.
+//* As we inspect it we can see 6 levels of chain prototypes
+
+// Any function is also an object and therefore it also has prototype.
+console.dir(x => x + 1); // This anonymous function contains apply, bind and call...That's why we can call these functions on it...
