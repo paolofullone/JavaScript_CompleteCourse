@@ -80,7 +80,11 @@ console.log(Person.prototype.isPrototypeOf(Person));
 Person.prototype.species = 'Homo Sapiens';
 console.log(paolo, kely);
 console.log(
-  'So, firstName is a Own Porperty and Species is a property that the paolo object has access to because of the prototype.'
+  'So, firstName is a Own Property and Species is a property that the paolo object has access to because of the prototype.'
 );
 console.log(paolo.hasOwnProperty('firstName'));
 console.log(paolo.hasOwnProperty('species'));
+
+//? 205 Prototypal Inheritance and The Prototype Chain.mp4
+
+// PROTOTYPE CHAIN is very similar to SCOPE CHAIN.
