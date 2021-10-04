@@ -1,7 +1,7 @@
 'use strict';
 
 //? 203 Constructor Functions and the new Operator.mp4
-/*
+
 // In OOP there's a convention that Constructor Functions always starts with a capital letter. Arrow function doest not work with
 // Constructor Functions because it does not have the this keyword. Only function declarations and function expressions works.
 const Person = function (firstName, birthYear) {
@@ -37,11 +37,22 @@ console.log(kely, luca, manu);
 
 // To check if a object is from a class:
 console.log('--- Check object ---');
-const joe = 'Joe';
+const john = 'John';
 
 // paolo is an instance of Person
 console.log(paolo instanceof Person);
-console.log(joe instanceof Person);
+console.log(john instanceof Person);
+
+//? 210
+Person.hey = function () {
+  console.log('Hey there 👋');
+  console.log(this); // the this keyword is the entire constructor function here, that is exactly the object (Person) that is calling the
+  // method.
+};
+
+// Person.hey();
+// paolo.hey(); // as we cannot call a from method directly on an array, we cannot call paolo.hey() because the .hey() is not in the
+// prototype of the paolo object.
 
 //? 204 Prototypes.mp4
 
@@ -86,7 +97,7 @@ console.log(paolo.hasOwnProperty('firstName'));
 console.log(paolo.hasOwnProperty('species'));
 
 //? 205 Prototypal Inheritance and The Prototype Chain.mp4
-
+/*
 // PROTOTYPE CHAIN is very similar to SCOPE CHAIN.
 
 //? 206 Prototypal Inheritance on Built-In Objects.mp4
@@ -137,7 +148,7 @@ console.dir(h1); // as we can see the Prototype in the end of the object is a HT
 
 // Any function is also an object and therefore it also has prototype.
 console.dir(x => x + 1); // This anonymous function contains apply, bind and call...That's why we can call these functions on it...
-*/
+
 //? 207 Coding Challenge #1.mp4
 
 ///////////////////////////////////////
@@ -208,6 +219,8 @@ class PersonCl {
     this.fullName = fullName;
     this.birthYear = birthYear;
   }
+  // Instance Methods.
+  // Methods will be added to .prototype property (all instances can have access to them.)
   calcAge() {
     console.log(2021 - this.birthYear);
     // All the methods written outside the constructor but inside the class will be on the prototype of the objects and not on the objects
@@ -234,6 +247,12 @@ class PersonCl {
   get fullName() {
     return this._fullName; // with this getter we can call lola.fullName in the console and will receive the _fullName.
   }
+  // Static Method //? 210
+  static hey() {
+    console.log('Hey there 👋');
+    console.log(this); // the this keyword is the entire constructor function here, that is exactly the object (Person) that is calling the
+    // method.
+  }
 }
 
 const lola = new PersonCl('Lola Scherrer Fullone', 2013);
@@ -250,6 +269,8 @@ lola.greet();
 
 const joe = new PersonCl('Joe Scherrer Fullone', 2015);
 
+PersonCl.hey(); //? 210
+
 //* 1. Classes are NOT hoisted (we cannot use them before they are declared in the code.)
 //* 2. Classes are also first-class citizens, we can pass them into functions and also return them from functions. That is because classes
 //* are really a special kind of functions behind the scenes.
@@ -258,7 +279,7 @@ const joe = new PersonCl('Joe Scherrer Fullone', 2015);
 //* Constructor functions are 100% ok of use as well, this is more a personal preference.
 
 //? 209 Setters and Getters.mp4
-
+/*
 // This feature is common to all objects in JS. Getters and Setters are assessor properties while the more normal properties are called
 // data properties. Getters and Setters are basically a function that gets and sets a value as the name says.
 
@@ -282,3 +303,42 @@ console.log(account.latest); // we write latest as if it was a property, no need
 
 account.latest = 50; // no need to do account.latest(50)
 console.log(account.movements);
+*/
+
+//? 210 Static Methods.mp4
+
+// In the console lets type: Array.from(document.querySelectorAll('h1'))
+// This will return an array with h1, so the FROM method is attached to the ARRAY CONSTRUCTOR.
+// So we cannot use the from method in an array like: [1,2,3].from() is not gonna work. So from is not a function.
+// It's not on the prototype of the arrays, so they do not inherit it. It is attached to the constructor itself.
+// Number.parseFloat(12) is the same case.
+
+//? 211 Object.create.mp4
+
+// So we learned about constructor and ES6 classes, and now let's see a 3rd way of implementing prototypal inheritance or delegation.
+// Object.create works in a different way,
+
+// With Object.create we can manually set the prototype to any object.
+
+const PersonProto = {
+  calcAge() {
+    console.log(2021 - this.birthYear);
+  },
+  init(firstName, birthYear) {
+    this.firstName = firstName; // looks like the constructor function however we will not use new operator, instead we will use init.
+    this.birthYear = birthYear;
+  },
+};
+
+const steven = Object.create(PersonProto); // PersonProto is the object that we want to be the prototype of the new object (steven).
+// steven right now is an empty object and will be linked to PersonProto object which will be it's prototype.
+console.log(steven); // it is an empty object, but has the calcAge function on it.
+steven.name = 'Steven';
+steven.birthYear = 2002;
+steven.calcAge(); // We just implemented prototype inheritance in a completely different way.
+
+console.log(steven.__proto__ === PersonProto);
+
+const sarah = Object.create(PersonProto);
+sarah.init('Sarah', 1979);
+sarah.calcAge();
