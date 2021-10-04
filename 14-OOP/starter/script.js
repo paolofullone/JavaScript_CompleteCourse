@@ -154,7 +154,7 @@ DATA CAR 2: 'Mercedes' going at 95 km/h
 
 GOOD LUCK 😀
 */
-
+/*
 const Car = function (make, speed) {
   this.make = make;
   this.speed = speed;
@@ -188,3 +188,50 @@ mercedes.accelerate();
 mercedes.accelerate();
 mercedes.accelerate();
 mercedes.accelerate();
+*/
+
+//? 208 ES6 Classes.mp4
+
+// Let's do the same name objects but using classes instead of constructor functions.
+
+//* Class Expression:
+
+// const PersonCl = class {}
+
+//* Or:
+//* Class Declaration
+
+// lola.greet(); just to prove #1
+
+class PersonCl {
+  constructor(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  }
+  calcAge() {
+    console.log(2021 - this.birthYear);
+    // All the methods written outside the constructor but inside the class will be on the prototype of the objects and not on the objects
+    // themselves. So we can see the calcAge method in the prototype of lola object and we can simply call lola.calcAge();
+  }
+  greet() {
+    console.log(`Hey ${this.firstName}!`); // Important to notice that no , are necessary between methods.
+  }
+}
+
+const lola = new PersonCl('Lola', 2013);
+console.log(lola);
+lola.calcAge();
+console.log(lola.__proto__ === PersonCl.prototype);
+
+// Adding method manually to the class:
+// PersonCl.prototype.greet = function () {
+//   console.log(`Hey ${this.firstName}!`);
+// }; // or we can add directly to the class
+lola.greet();
+
+//* 1. Classes are NOT hoisted (we cannot use them before they are declared in the code.)
+//* 2. Classes are also first-class citizens, we can pass them into functions and also return them from functions. That is because classes
+//* are really a special kind of functions behind the scenes.
+//* 3. Classes are executed on strict mode. Even if we didn't activate it, the classes are executed in strict mode.
+
+//* Constructor functions are 100% ok of use as well, this is more a personal preference.
