@@ -204,8 +204,8 @@ mercedes.accelerate();
 // lola.greet(); just to prove #1
 
 class PersonCl {
-  constructor(firstName, birthYear) {
-    this.firstName = firstName;
+  constructor(fullName, birthYear) {
+    this.fullName = fullName;
     this.birthYear = birthYear;
   }
   calcAge() {
@@ -214,20 +214,41 @@ class PersonCl {
     // themselves. So we can see the calcAge method in the prototype of lola object and we can simply call lola.calcAge();
   }
   greet() {
-    console.log(`Hey ${this.firstName}!`); // Important to notice that no , are necessary between methods.
+    console.log(`Hey ${this.fullName}!`); // Important to notice that no , are necessary between methods.
+  }
+
+  get age() {
+    // including this getter here from lection 209!
+    return 2021 - this.birthYear;
+  }
+
+  // Set a property that already exists!
+  set fullName(name) {
+    console.log(name);
+    if (name.includes(' ')) this._fullName = name;
+    //* w/o the _ we get a error of Maximum Call stack size exceeded because the setter function and the constructor function are trying
+    //* to set the same property name. The convention for this situation is to insert a _ in the name of the variable we're trying to create.
+    //* The solution is also to create a getter for the variable.
+    else alert(`${name} is not a full name!`);
+  }
+  get fullName() {
+    return this._fullName; // with this getter we can call lola.fullName in the console and will receive the _fullName.
   }
 }
 
-const lola = new PersonCl('Lola', 2013);
+const lola = new PersonCl('Lola Scherrer Fullone', 2013);
 console.log(lola);
 lola.calcAge();
+console.log(lola.age); // using the getter we get the same result.
 console.log(lola.__proto__ === PersonCl.prototype);
 
 // Adding method manually to the class:
 // PersonCl.prototype.greet = function () {
-//   console.log(`Hey ${this.firstName}!`);
+//   console.log(`Hey ${this.fullName}!`);
 // }; // or we can add directly to the class
 lola.greet();
+
+const joe = new PersonCl('Joe Scherrer Fullone', 2015);
 
 //* 1. Classes are NOT hoisted (we cannot use them before they are declared in the code.)
 //* 2. Classes are also first-class citizens, we can pass them into functions and also return them from functions. That is because classes
@@ -235,3 +256,29 @@ lola.greet();
 //* 3. Classes are executed on strict mode. Even if we didn't activate it, the classes are executed in strict mode.
 
 //* Constructor functions are 100% ok of use as well, this is more a personal preference.
+
+//? 209 Setters and Getters.mp4
+
+// This feature is common to all objects in JS. Getters and Setters are assessor properties while the more normal properties are called
+// data properties. Getters and Setters are basically a function that gets and sets a value as the name says.
+
+const account = {
+  owner: 'Paolo',
+  movements: [200, 530, 900, 1800],
+
+  get latest() {
+    // the get word transforms it into a getter
+    return this.movements.slice(-1).pop(); //* w/o the .pop it would return a [1800], we could also use destructure but not necessary
+    //* to store it in a variable now.
+  },
+  set latest(mov) {
+    //* it is not necessary to establish a setter together with a getter, just one of them is enough.
+    //* The setter gets 1 parameter, in this case movement.
+    this.movements.push(mov);
+  },
+};
+
+console.log(account.latest); // we write latest as if it was a property, no need to call ()
+
+account.latest = 50; // no need to do account.latest(50)
+console.log(account.movements);
