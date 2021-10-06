@@ -1,7 +1,7 @@
 'use strict';
 
 //? 203 Constructor Functions and the new Operator.mp4
-
+/*
 // In OOP there's a convention that Constructor Functions always starts with a capital letter. Arrow function doest not work with
 // Constructor Functions because it does not have the this keyword. Only function declarations and function expressions works.
 const Person = function (firstName, birthYear) {
@@ -202,7 +202,7 @@ mercedes.accelerate();
 */
 
 //? 208 ES6 Classes.mp4
-
+/*
 // Let's do the same name objects but using classes instead of constructor functions.
 
 //* Class Expression:
@@ -314,7 +314,7 @@ console.log(account.movements);
 // Number.parseFloat(12) is the same case.
 
 //? 211 Object.create.mp4
-
+/*
 // So we learned about constructor and ES6 classes, and now let's see a 3rd way of implementing prototypal inheritance or delegation.
 // Object.create works in a different way,
 
@@ -355,7 +355,7 @@ DATA CAR 1: 'Ford' going at 120 km/h
 
 GOOD LUCK 😀
 */
-
+/*
 class CarCl {
   // cl stands for Class
   constructor(make, speed) {
@@ -387,3 +387,63 @@ ford.brake(); // Ok
 ford.speedUS; // Ok
 ford.speedUS = 50; // 80 km/h
 console.log(ford);
+*/
+
+//? 213 Inheritance Between _Classes__ Constructor Functions.mp4
+
+// Lets create a student class that will inherit the Person class.
+// The idea is that student class can share behavior fro the parent Person class trough the prototype chain.
+
+const Person = function (firstName, birthYear) {
+  this.firstName = firstName;
+  this.birthYear = birthYear;
+};
+
+Person.prototype.calcAge = function () {
+  console.log(2021 - this.birthYear);
+};
+
+// So student has the same properties of person and an additional 'course'
+const Student = function (firstName, birthYear, course) {
+  //1 Since we already have this in the Person function, lets re-factor:
+  // this.firstName = firstName;
+  // this.birthYear = birthYear;
+
+  //2 Person(firstName, birthYear); //* This does not work because we are calling the Person constructor function as a regular construction call, by not using the
+  //* new operator. And the regular function call the this keyword is set to undefined.
+
+  //3 So we need to set the this keyword with the call method.
+  Person.call(this, firstName, birthYear);
+
+  //4 And include the new parameter.
+  this.course = course;
+};
+
+// Linking prototypes
+// With this the student.prototype object is now an object that inherits from person.prototype.
+//* we have to create the object before we add any methods to the prototype object of student. Because object.create returns an empty object.
+Student.prototype = Object.create(Person.prototype);
+// console.log('🚀 ~ Student.prototype', Student.prototype);
+
+// Student.prototype = Person.prototype // This does not work because that would say the student.prototype and person.prototype should be
+// the exact same object. Not really what we want. We want the persons.prototype object to be the prototype of student.prototype.
+
+Student.prototype.introduce = function () {
+  console.log(`My name is ${this.firstName} and I study ${this.course}`);
+};
+
+const mike = new Student('Mike', 2000, 'Computer Science');
+mike.introduce();
+mike.calcAge(); // so we created a student that inherited from Person and it's possible to calcAge.
+
+console.log(mike.__proto__); // this has only the introduce method, however it has another prototype in it. So lets see:
+console.log(mike.__proto__.__proto__); // This one has the calcAge function from the Person.prototype.
+
+console.log(mike instanceof Student);
+console.log(mike instanceof Person); // if we take out the Student.prototype = Object.create(Person.prototype); this will return false (we also have to comment
+// out the mike.calcAge() temporarily.
+console.log(mike instanceof Object);
+
+// we can see the same data in the console typing mike and inspecting.
+// As we inspected we saw the the mike constructor is person and it should be student. That happens because of the Object.create based on Person.
+Student.prototype.constructor = Student;
