@@ -390,7 +390,7 @@ console.log(ford);
 */
 
 //? 213 Inheritance Between _Classes__ Constructor Functions.mp4
-
+/*
 // Lets create a student class that will inherit the Person class.
 // The idea is that student class can share behavior fro the parent Person class trough the prototype chain.
 
@@ -447,3 +447,67 @@ console.log(mike instanceof Object);
 // we can see the same data in the console typing mike and inspecting.
 // As we inspected we saw the the mike constructor is person and it should be student. That happens because of the Object.create based on Person.
 Student.prototype.constructor = Student;
+*/
+
+//? 214 Coding Challenge #3.mp4
+///////////////////////////////////////
+// Coding Challenge #3
+
+/* 
+1. Use a constructor function to implement an Electric Car (called EV) as a CHILD "class" of Car. Besides a make and current speed, the EV also has the current
+battery charge in % ('charge' property);
+2. Implement a 'chargeBattery' method which takes an argument 'chargeTo' and sets the battery charge to 'chargeTo';
+3. Implement an 'accelerate' method that will increase the car's speed by 20, and decrease the charge by 1%. Then log a message like this: 'Tesla going at 140
+km/h, with a charge of 22%';
+4. Create an electric car object and experiment with calling 'accelerate', 'brake' and 'chargeBattery' (charge to 90%). Notice what happens when you 
+'accelerate'! HINT: Review the definition of polymorphism 😉
+
+DATA CAR 1: 'Tesla' going at 120 km/h, with a charge of 23%
+
+GOOD LUCK 😀
+*/
+
+const Car = function (make, speed) {
+  this.make = make;
+  this.speed = speed;
+};
+
+Car.prototype.accelerate = function () {
+  this.speed += 10;
+  console.log(`${this.make} is going at ${this.speed} Km/h`);
+};
+
+Car.prototype.brake = function () {
+  this.speed -= 5;
+  console.log(`${this.make} is going at ${this.speed} Km/h`);
+};
+
+const EV = function (make, speed, charge) {
+  Car.call(this, make, speed); // setting the this keyword that we are using in EV
+  this.charge = charge;
+};
+
+// Link the prototypes. We want that EV inherits prototype from Car.
+EV.prototype = Object.create(Car.prototype); // this sets the Car as the EV prototype.
+
+EV.prototype.chargeBattery = function (chargeTo) {
+  this.charge = chargeTo;
+};
+
+const tesla = new EV('Tesla', 120, 23);
+tesla.chargeBattery(90);
+console.log(tesla);
+
+EV.prototype.accelerate = function () {
+  this.speed += 20;
+  this.charge--;
+  console.log(
+    `${this.make} going at ${this.speed} km/h with a charge of ${this.charge}%.`
+  );
+};
+
+tesla.brake(); // this one was inherited from Car class.
+tesla.accelerate(); // this accelerate method is from EV class, not from Car class.
+
+//* When there are 2 methods with the same name on the prototype chain, JS will pick the first one. And in this case overrides the accelerate method from Car
+//* (parent class) in order to use the accelerate method of EV (child class).
