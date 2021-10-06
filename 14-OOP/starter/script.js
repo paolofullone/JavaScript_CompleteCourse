@@ -239,7 +239,7 @@ class PersonCl {
   set fullName(name) {
     console.log(name);
     if (name.includes(' ')) this._fullName = name;
-    //* w/o the _ we get a error of Maximum Call stack size exceeded because the setter function and the constructor function are trying
+    //* w/o the _ we get an error of Maximum Call stack size exceeded because the setter function and the constructor function are trying
     //* to set the same property name. The convention for this situation is to insert a _ in the name of the variable we're trying to create.
     //* The solution is also to create a getter for the variable.
     else alert(`${name} is not a full name!`);
@@ -342,3 +342,48 @@ console.log(steven.__proto__ === PersonProto);
 const sarah = Object.create(PersonProto);
 sarah.init('Sarah', 1979);
 sarah.calcAge();
+
+// Coding Challenge #2
+
+/* 
+1. Re-create challenge 1, but this time using an ES6 class;
+2. Add a getter called 'speedUS' which returns the current speed in mi/h (divide by 1.6);
+3. Add a setter called 'speedUS' which sets the current speed in mi/h (but converts it to km/h before storing the value, by multiplying the input by 1.6);
+4. Create a new car and experiment with the accelerate and brake methods, and with the getter and setter.
+
+DATA CAR 1: 'Ford' going at 120 km/h
+
+GOOD LUCK 😀
+*/
+
+class CarCl {
+  // cl stands for Class
+  constructor(make, speed) {
+    this.make = make;
+    this.speed = speed;
+  }
+  accelerate() {
+    this.speed += 10;
+    console.log(`${this.make} is going at ${this.speed} Km/h`);
+  }
+  brake() {
+    this.speed -= 5;
+    console.log(`${this.make} is going at ${this.speed} Km/h`);
+  }
+  get speedUS() {
+    return console.log(`${this.make} is going at ${this.speed / 1.6} mi/h`);
+  }
+  set speedUS(speed) {
+    this.speed = speed * 1.6;
+  }
+}
+
+const ford = new CarCl('Ford', 120);
+console.log(ford); // Ok
+ford.speedUS; // Ok
+ford.accelerate(); // Ok
+ford.speedUS; // Ok
+ford.brake(); // Ok
+ford.speedUS; // Ok
+ford.speedUS = 50; // 80 km/h
+console.log(ford);
