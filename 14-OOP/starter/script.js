@@ -466,7 +466,7 @@ DATA CAR 1: 'Tesla' going at 120 km/h, with a charge of 23%
 
 GOOD LUCK 😀
 */
-
+/*
 const Car = function (make, speed) {
   this.make = make;
   this.speed = speed;
@@ -511,3 +511,68 @@ tesla.accelerate(); // this accelerate method is from EV class, not from Car cla
 
 //* When there are 2 methods with the same name on the prototype chain, JS will pick the first one. And in this case overrides the accelerate method from Car
 //* (parent class) in order to use the accelerate method of EV (child class).
+*/
+
+//? 215 Inheritance Between _Classes__ ES6 Classes.mp4
+
+class PersonCl {
+  constructor(fullName, birthYear) {
+    this.fullName = fullName;
+    this.birthYear = birthYear;
+  }
+
+  calcAge() {
+    console.log(2021 - this.birthYear);
+  }
+  greet() {
+    console.log(`Hey ${this.fullName}!`);
+  }
+
+  get age() {
+    return 2021 - this.birthYear;
+  }
+
+  set fullName(name) {
+    console.log(name);
+    if (name.includes(' ')) this._fullName = name;
+    else alert(`${name} is not a full name!`);
+  }
+  get fullName() {
+    return this._fullName;
+  }
+  // Static Method
+  static hey() {
+    console.log('Hey there 👋');
+    console.log(this);
+  }
+}
+
+class StudentCl extends PersonCl {
+  constructor(fullName, birthYear, course) {
+    // we don't need a PersonCl.call(), instead we use the super function.
+    // Always needs to happen first, the this keyword is set with the super call.
+    super(fullName, birthYear); //super is basically the constructor of the parent class. And we pass the same arguments of the parent.
+    this.course = course; //* It is not mandatory to have an additional parameter. Could be only new methods.
+  }
+  introduce() {
+    console.log(`My name is ${this.fullName} and I study ${this.course}`);
+  }
+  // Now let's override the calcAge method. Just to prove once again the prototype chain.
+  calcAge() {
+    console.log(
+      `I'm ${
+        2021 - this.birthYear
+      } years old, but as a student I fell more like ${
+        2021 - this.birthYear + 10
+      } years old.`
+    );
+  }
+}
+
+// const lola = new StudentCl('Lola Jones', 2012); // with this we can simply have class StudentCl extends PersonCl {} and it works.
+const lola = new StudentCl('Lola Jones', 2012, 'Computer Science');
+console.log(lola);
+lola.introduce();
+lola.calcAge();
+
+//* If we inspect lola at console, we will see that we have 3 levels of prototypes including all methods (get age, get fullName, set fullName)
