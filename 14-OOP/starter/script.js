@@ -581,7 +581,7 @@ lola.calcAge();
 //? 216 Inheritance Between _Classes__ Object.create.mp4
 
 // How to use object.create do implement a complex prototype chain.
-
+/*
 const PersonProto = {
   calcAge() {
     console.log(2021 - this.birthYear);
@@ -614,3 +614,58 @@ jay.calcAge();
 
 //* This version don't worry about constructors anymore nor prototype properties neither the New operator.
 //* It is just objects linked to other objects.
+*/
+
+//* 217 Another Class Example.mp4
+
+// Let's create a new class
+
+class Account {
+  constructor(owner, currency, pin) {
+    this.owner = owner;
+    this.currency = currency;
+    this.pin = pin;
+    // Now lets add some properties not declared, that will be added to all accounts.
+    this.movements = [];
+    this.locale = navigator.language;
+    console.log(`Thanks for opening an account ${owner}`);
+  }
+
+  //Public Interface
+  deposit(val) {
+    this.movements.push(val);
+  }
+  withdraw(val) {
+    this.deposit(-val);
+  }
+  approveLoan(val) {
+    return true; // no need to implement a complex logic here, just to show the funcitonality.
+  }
+
+  requestLoan(val) {
+    if (this.approveLoan(val)) {
+      // if the approveLoan is true, then...
+      this.deposit(val);
+      console.log('Loan approved.');
+    }
+  }
+}
+
+const acc1 = new Account('Paolo', 'EUR', 1111);
+console.log(acc1);
+
+// Adding an movement, we could directly write like this, however it is not a good idea, let's create a method for that.
+// acc1.movements.push(250);
+// acc1.movements.push(-140);
+
+// With the methods:
+acc1.deposit(250);
+acc1.withdraw(140);
+acc1.requestLoan(1000);
+// if we had a logic in approveLoan in this scenario we could simply do: accc1.approveLoan = true, but in the real world we couldn't
+// have access to approveLoan. This is why we need some data encapsulation and data privacy.
+console.log(acc1);
+
+// So deposit and withdraw are a public interface, or an interface to our objects, also called API.
+// Using the API we abstracted away the fact that the user must input a negative value to a withdraw, that only can avoid bugs.
+console.log(acc1.pin); // so the pin is accessible outside from outside of the class.
