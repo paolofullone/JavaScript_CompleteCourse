@@ -514,7 +514,7 @@ tesla.accelerate(); // this accelerate method is from EV class, not from Car cla
 */
 
 //? 215 Inheritance Between _Classes__ ES6 Classes.mp4
-
+/*
 class PersonCl {
   constructor(fullName, birthYear) {
     this.fullName = fullName;
@@ -576,3 +576,41 @@ lola.introduce();
 lola.calcAge();
 
 //* If we inspect lola at console, we will see that we have 3 levels of prototypes including all methods (get age, get fullName, set fullName)
+*/
+
+//? 216 Inheritance Between _Classes__ Object.create.mp4
+
+// How to use object.create do implement a complex prototype chain.
+
+const PersonProto = {
+  calcAge() {
+    console.log(2021 - this.birthYear);
+  },
+  init(firstName, birthYear) {
+    this.firstName = firstName;
+    this.birthYear = birthYear;
+  },
+};
+
+const steven = Object.create(PersonProto);
+
+const StudentProto = Object.create(PersonProto); // creating an object that will be the prototype of students, for now an empty object. And the prototype will be
+// PersonProto. Now we can use StudentProto to create new students.
+StudentProto.init = function (firstName, birthYear, course) {
+  PersonProto.init.call(this, firstName, birthYear);
+  this.course = course;
+};
+
+StudentProto.introduce = function () {
+  console.log(`My name is ${this.firstName} and I study ${this.course}`);
+};
+
+const jay = Object.create(StudentProto); // Now the StudentProto is the prototype of Jay object. And PersonProto is the prototype of StudentProto. So PersonProto
+// is a parent prototype of jay. => Inspect jay in console.
+// jay can use all the objects in StudentProto and PersonProto
+jay.init('Jay', 2010, 'Web Developer at Trybe');
+jay.introduce();
+jay.calcAge();
+
+//* This version don't worry about constructors anymore nor prototype properties neither the New operator.
+//* It is just objects linked to other objects.
