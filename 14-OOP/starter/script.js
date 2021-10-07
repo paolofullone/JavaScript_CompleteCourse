@@ -619,7 +619,7 @@ jay.calcAge();
 //* 217 Another Class Example.mp4
 
 // Let's create a new class
-
+/*
 class Account {
   constructor(owner, currency, pin) {
     this.owner = owner;
@@ -664,6 +664,76 @@ acc1.withdraw(140);
 acc1.requestLoan(1000);
 // if we had a logic in approveLoan in this scenario we could simply do: accc1.approveLoan = true, but in the real world we couldn't
 // have access to approveLoan. This is why we need some data encapsulation and data privacy.
+console.log(acc1);
+
+// So deposit and withdraw are a public interface, or an interface to our objects, also called API.
+// Using the API we abstracted away the fact that the user must input a negative value to a withdraw, that only can avoid bugs.
+console.log(acc1.pin); // so the pin is accessible outside from outside of the class.
+
+*/
+//? 218 Encapsulation_ Protected Properties and Methods.mp4
+
+// 2 reasons why we need data privacy:
+//* 1st to avoid a code from outside the class manipulate the data inside the class. We did that using the movements.push(250)
+//* 2nd when we expose only a small interface we can change the methods inside the class with more confidence, because external code will not rely
+//* on the private methods.
+//* However JS is not really ready to deal with encapsulation, it is not ready yet. Whe will fake an encapsulation using a convention.
+
+class Account {
+  constructor(owner, currency, pin) {
+    this.owner = owner;
+    this.currency = currency;
+    this._pin = pin; //* to "protect" it we will add the _
+    // Now lets add some properties not declared, that will be added to all accounts.
+    // Protected Data, it does not really protect, but the programers team will know it should not be modified outside the class.
+    this._movements = []; //* to "protect" it we will add the _
+    this.locale = navigator.language;
+    console.log(`Thanks for opening an account ${owner}`);
+  }
+
+  //Public Interface
+  getMovements() {
+    // we could have a getter, but it is very common to have variables getSomething or setSomething without using getter or setter.
+    return this._movements;
+  }
+
+  deposit(val) {
+    this._movements.push(val);
+  }
+  withdraw(val) {
+    this.deposit(-val);
+  }
+  _approveLoan(val) {
+    // since we inserted the _ before the name of this method, it should not be public outside the API, all the others should be.
+    return true; // no need to implement a complex logic here, just to show the funcitonality.
+  }
+
+  requestLoan(val) {
+    if (this._approveLoan(val)) {
+      // if the approveLoan is true, then...
+      this.deposit(val);
+      console.log('Loan approved.');
+    }
+  }
+}
+
+const acc1 = new Account('Paolo', 'EUR', 1111);
+console.log(acc1);
+
+// Adding an movement, we could directly write like this, however it is not a good idea, let's create a method for that.
+// acc1.movements.push(250);
+// acc1.movements.push(-140);
+
+// With the methods:
+acc1.deposit(250);
+acc1.withdraw(140);
+acc1.requestLoan(1000);
+// if we had a logic in approveLoan in this scenario we could simply do: accc1.approveLoan = true, but in the real world we couldn't
+// have access to approveLoan. This is why we need some data encapsulation and data privacy.
+
+// This would be a right way of getting the movements.
+console.log(acc1.getMovements());
+
 console.log(acc1);
 
 // So deposit and withdraw are a public interface, or an interface to our objects, also called API.
