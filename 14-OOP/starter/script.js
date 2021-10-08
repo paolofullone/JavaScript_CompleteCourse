@@ -672,7 +672,7 @@ console.log(acc1.pin); // so the pin is accessible outside from outside of the c
 
 */
 //? 218 Encapsulation_ Protected Properties and Methods.mp4
-
+/*
 // 2 reasons why we need data privacy:
 //* 1st to avoid a code from outside the class manipulate the data inside the class. We did that using the movements.push(250)
 //* 2nd when we expose only a small interface we can change the methods inside the class with more confidence, because external code will not rely
@@ -738,4 +738,124 @@ console.log(acc1);
 
 // So deposit and withdraw are a public interface, or an interface to our objects, also called API.
 // Using the API we abstracted away the fact that the user must input a negative value to a withdraw, that only can avoid bugs.
-console.log(acc1.pin); // so the pin is accessible outside from outside of the class.
+console.log(acc1._pin); // so the pin is accessible outside from outside of the class.
+*/
+//? 219 Encapsulation_ Private Class Fields and Methods.mp4
+
+// In the class fields proposal (currently in stage3 implementation) there are 8 types of fields and methods, we will focus on 4:
+
+// Public fields
+/// Private fields
+// Public methods
+/// Private methods
+// (there is also the static version)
+
+// 2 reasons why we need data privacy:
+//* 1st to avoid a code from outside the class manipulate the data inside the class. We did that using the movements.push(250)
+//* 2nd when we expose only a small interface we can change the methods inside the class with more confidence, because external code will not rely
+//* on the private methods.
+//* However JS is not really ready to deal with encapsulation, it is not ready yet. Whe will fake an encapsulation using a convention.
+
+class Account {
+  // So in this class, all the objects created will have the _movements and the locale, so these are the public fields.
+  // To define a public field is "similar" to declare a variable, but w/o let or const and here we have to add ; in the end, it is a bit weird because
+  // between the methods we do not need the ;
+  //* 1- Public fields (instances):
+  locale = navigator.language;
+  // _movements = [];  // moved to private
+  //* locale and _movements are not on the prototype, they will be present in all the instances that we are creating trough the class.
+  //* all the methods (getMovements, deposit, withdraw...) are in the prototype, the fields are in the instances.
+  //* Now we can comment out this._movements and this.locale. and they keep referenceable via the this keyword.
+
+  //* 2- Private fields
+  // Properties are really truly not accessible from the outside.
+  #movements = []; // this is a syntax that makes the field private.
+  #pin; // with the pin the situation is a bit different, we will receive the pin as a input of the constructor method, so we basically set it outside the
+  // constructor without any value but protected.
+
+  constructor(owner, currency, pin) {
+    this.owner = owner;
+    this.currency = currency;
+    this.#pin = pin;
+    console.log(`Thanks for opening an account ${owner}`);
+  }
+  // 3 - Public Methods (nothing new...)
+  //Public Interface
+  getMovements() {
+    // we could have a getter, but it is very common to have variables getSomething or setSomething without using getter or setter.
+    return this.#movements;
+  }
+
+  deposit(val) {
+    this.#movements.push(val);
+    return this;
+  }
+  withdraw(val) {
+    this.deposit(-val);
+    return this;
+  }
+
+  requestLoan(val) {
+    // if (this.#approveLoan(val)) {
+    if (this._approveLoan(val)) {
+      // if the approveLoan is true, then...
+      this.deposit(val);
+      console.log('Loan approved.');
+      return this;
+    }
+  }
+  static helper() {
+    console.log('Helper');
+  }
+  // 4-Private Methods
+  // #approveLoan(val) {
+  _approveLoan(val) {
+    // since we inserted the _ before the name of this method, it should not be public outside the API, all the others should be.
+    return true; // no need to implement a complex logic here, just to show the functionality.
+  }
+}
+
+const acc1 = new Account('Paolo', 'EUR', 1111);
+console.log(acc1);
+
+// Adding an movement, we could directly write like this, however it is not a good idea, let's create a method for that.
+// acc1.movements.push(250);
+// acc1.movements.push(-140);
+
+// With the methods:
+acc1.deposit(250);
+acc1.withdraw(140);
+acc1.requestLoan(1000);
+// if we had a logic in approveLoan in this scenario we could simply do: accc1.approveLoan = true, but in the real world we couldn't
+// have access to approveLoan. This is why we need some data encapsulation and data privacy.
+
+// This would be a right way of getting the movements.
+console.log(acc1.getMovements());
+
+console.log(acc1);
+
+// console.log(acc1.#movements); // JS thinks we are actually trying to implement a private class out here in the global scope.
+//* In fact, we cannot access the variable outside.
+
+// after the pin protection we can no longer access it:
+// console.log(acc1.#pin);
+
+// console.log(acc1.#approveLoan(100)); // as of the moment I'm writing this, chrome see's the #approveLoan as a field, not a method. Methods are not available yet.
+// and we changed back to _approveLoan
+
+Account.helper(); // The static method will not be available in the instances (acc1), but only in the class itself (Account)
+// acc1.helper(); // returns an error.
+
+//? 220 Chaining Methods.mp4
+
+// with arrays we chained filter, map and reduce for example, we can do the same thing with the methods of our class.
+
+// Chaining
+// acc1.deposit(300).deposit(500).withdraw(35).requestLoan(25000).withdraw(4000); // as off now, it will not work, it will return cannot read properties of undefined
+// (reading deposit) because after the first deposit(300) nothing is returned, we need to return the account again, let's do it in the class with 'return this;'
+// in the deposit, withdraw and requestLoan methods.
+
+acc1.deposit(300).deposit(500).withdraw(35).requestLoan(25000).withdraw(4000);
+console.log(acc1.getMovements());
+
+//? 221 ES6 Classes Summary.mp4
