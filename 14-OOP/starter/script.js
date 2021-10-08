@@ -741,7 +741,7 @@ console.log(acc1);
 console.log(acc1._pin); // so the pin is accessible outside from outside of the class.
 */
 //? 219 Encapsulation_ Private Class Fields and Methods.mp4
-
+/*
 // In the class fields proposal (currently in stage3 implementation) there are 8 types of fields and methods, we will focus on 4:
 
 // Public fields
@@ -857,5 +857,75 @@ Account.helper(); // The static method will not be available in the instances (a
 
 acc1.deposit(300).deposit(500).withdraw(35).requestLoan(25000).withdraw(4000);
 console.log(acc1.getMovements());
+*/
 
 //? 221 ES6 Classes Summary.mp4
+
+//? 222 Coding Challenge #4.mp4
+
+class CarCl {
+  // cl stands for Class
+  constructor(make, speed) {
+    this.make = make;
+    this.speed = speed;
+  }
+  accelerate() {
+    this.speed += 10;
+    console.log(`${this.make} is going at ${this.speed} Km/h.`);
+  }
+  brake() {
+    this.speed -= 5;
+    console.log(`${this.make} is going at ${this.speed} Km/h.`);
+    return this; // so we can chain methods.
+  }
+  get speedUS() {
+    // return console.log(`${this.make} is going at ${this.speed / 1.6} mi/h.`); // I was returning this from my function, so rivian.SpeedUS was not
+    // accessible in the Child CarCl
+    return this.speed / 1.6;
+  }
+  set speedUS(speed) {
+    this.speed = speed * 1.6;
+  }
+}
+
+class EVcl extends CarCl {
+  #charge; // as we receive the charge with an input, we have to declare it outside the method.
+  constructor(make, speed, charge) {
+    super(make, speed);
+    this.#charge = charge;
+  }
+  chargeBattery(chargeTo) {
+    this.#charge = chargeTo;
+    console.log(`Battery charged to ${this.#charge}%`);
+    return this; // so we can chain methods.
+  }
+  accelerate() {
+    this.speed += 20;
+    this.#charge--;
+    console.log(
+      `${this.make} going at ${this.speed} km/h with a charge of ${
+        this.#charge
+      }%.`
+    );
+    return this; // so we can chain methods.
+  }
+}
+
+const rivian = new EVcl('Rivian', 120, 23);
+// console.log(rivian);
+
+// rivian.accelerate();
+// rivian.brake(); // brake is inherited from CarCl
+// console.log(rivian.#charge); // cannot access from the outside... :)
+
+rivian
+  .accelerate()
+  .brake()
+  .chargeBattery(100)
+  .accelerate()
+  .accelerate()
+  .brake()
+  .brake()
+  .brake();
+
+console.log(rivian.speedUS);
