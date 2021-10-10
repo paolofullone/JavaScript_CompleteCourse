@@ -70,11 +70,35 @@ if (navigator.geolocation)
           '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
       }).addTo(map);
 
-      //   L.marker([51.5, -0.09])
-      L.marker(coords)
-        .addTo(map)
-        .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-        .openPopup();
+      console.log(map); // so before we manipulate the map const we stored with the map, lets take a loot at it, first thing to notice is that we have
+      // some _ in variables, so they should not be touched. The on method is the built in event listener of the leaflet maps. 3rd level of inheritance to inspect.
+      map.on('click', function (mapEvent) {
+        console.log(mapEvent); // we can see that when we click a object is created, in the object we have latIng with latitude and longitude.
+
+        const { lat, lng } = mapEvent.latlng;
+
+        //1  L.marker([51.5, -0.09])
+        //2     L.marker(coords)
+        //       .addTo(map)
+        //       .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+        //       .openPopup();
+        //   });
+        //3 L.marker([lat, lng]).addTo(map).bindPopup('workout').openPopup(); // This one closes the 'workout' as we click in a new one.
+        // take a look at https://leafletjs.com/reference-1.7.1.html#marker to see the documentation
+        L.marker([lat, lng])
+          .addTo(map)
+          .bindPopup(
+            L.popup({
+              maxWidth: 250,
+              minWidth: 100,
+              autoClose: false,
+              closeOnClick: false,
+              className: 'running-popup', // we will dynamically define latter on. This is on CSS file and allows us to customize the pop ups.
+            })
+          )
+          .setPopupContent('Workout') // Added the text back
+          .openPopup();
+      });
     },
     function () {
       alert('Could not get your position');
@@ -102,3 +126,7 @@ downloaded the leaflet library.
 //* we also added the DEFER attribute do the <script> to determine the order of execution of the scripts.
 
 // Go to leaflet site, overview section and include the code in the success function of geolocation.
+
+//? 229 Displaying a Map Marker.mp4
+
+// display a marker wherever we click on the map.
