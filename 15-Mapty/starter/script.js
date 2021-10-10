@@ -168,3 +168,10 @@ downloaded the leaflet library.
 
 // Render the workout form whenever the user clicks on the map. The form is already in the html file and has a hidden class by default.
 // So we will do DOM manipulation adding and removing classes.
+
+//?  231 Project Architecture.mp4
+
+// We will have a Workout parent class and two child classes (Running and Cycling), the features of each class are shown in the 231 picture.
+
+// We will also have a App class that will have all the functions and we will protect the functions from the outside code. The events will
+// interact with the functions of this class.
