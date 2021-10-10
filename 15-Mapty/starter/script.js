@@ -51,8 +51,54 @@ if (navigator.geolocation)
       //   console.log(latitude, longitude);
       console.log(`https://www.google.com.br/maps/@${latitude},${longitude}`);
       //   console.log(position);
+
+      const coords = [latitude, longitude];
+
+      //   const map = L.map('map').setView([51.505, -0.09], 13);
+      const map = L.map('map').setView(coords, 16); // Here is where the map will be displayed, so we need an id of map in our html. The L is a main function
+      //   that leaflet gives us as an entry point. This is a namespace of leaflet API. We can inspect L in the console because L is a global variable in the leaflet.js.
+      // If we create a other.js with const name = 'Paolo' and include a tag <script defer src="other.js"></script> in our html before the script.js we will be able
+      // to log name in this script.js file.
+      // the second argument (13) is the zoom on the map.
+
+      // The map we see on screen is basically little tiles that comes from this url here (open street map), we can google for some map styles.
+
+      //   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+        // applying different map style.
+        attribution:
+          '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+      }).addTo(map);
+
+      //   L.marker([51.5, -0.09])
+      L.marker(coords)
+        .addTo(map)
+        .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+        .openPopup();
     },
     function () {
       alert('Could not get your position');
     }
   );
+
+//? 228 Displaying a Map Using Leaflet Library.mp4
+
+// Leaflet is a open source library mobile-friendly maps for JS, when we google it we find multiple ways of adding the leaflet to our application
+// for now we will use the leaflet from a CDN (content delivery network).
+// Go to leaflet site, download section:
+
+/* we have to include this to our html head before our own script (VERY IMPORTANT) because when our script loads, the browser will have already
+downloaded the leaflet library.
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+  crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin=""></script>
+
+  */
+
+//* we also added the DEFER attribute do the <script> to determine the order of execution of the scripts.
+
+// Go to leaflet site, overview section and include the code in the success function of geolocation.
