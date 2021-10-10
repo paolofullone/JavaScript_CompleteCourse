@@ -11,7 +11,7 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
-// 226 How to Plan a Web Project.mp4
+//? 226 How to Plan a Web Project.mp4
 
 //1 User Stories - How the user describe the hole application in a high level overview from the user perspective.
 //2 Features - based on the user stories we define the exact features we need to implement.
@@ -36,3 +36,23 @@ const inputElevation = document.querySelector('.form__input--elevation');
 
 //4 - Architecture, as the flowchart we don't always have to define the perfect architecture before implementation. We can do
 // some experiments, play around with the code, than define the final architecture.
+
+//? 227 Using the Geolocation API.mp4
+
+// if the navigator.geolocation exists then get the current position or show an error message.
+// The geolocation gets 2 functions as parameters, 1 for success retrieve of the location and the other for failure (browser block)
+
+if (navigator.geolocation)
+  navigator.geolocation.getCurrentPosition(
+    function (position) {
+      // const latitude = position.coords.latitude; // we could write like this, or the line below (more clean) using destructure.
+      const { latitude } = position.coords;
+      const { longitude } = position.coords;
+      //   console.log(latitude, longitude);
+      console.log(`https://www.google.com.br/maps/@${latitude},${longitude}`);
+      //   console.log(position);
+    },
+    function () {
+      alert('Could not get your position');
+    }
+  );
