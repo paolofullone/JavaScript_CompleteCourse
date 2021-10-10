@@ -42,6 +42,9 @@ const inputElevation = document.querySelector('.form__input--elevation');
 // if the navigator.geolocation exists then get the current position or show an error message.
 // The geolocation gets 2 functions as parameters, 1 for success retrieve of the location and the other for failure (browser block)
 
+let map, mapEvent; // now that we implemented a event listener on enter in the form, we need map and mapEvent at the global scope. so we changed 'const map' inside the geolocation to let map
+// in the global scope.
+
 if (navigator.geolocation)
   navigator.geolocation.getCurrentPosition(
     function (position) {
@@ -55,7 +58,7 @@ if (navigator.geolocation)
       const coords = [latitude, longitude];
 
       //   const map = L.map('map').setView([51.505, -0.09], 13);
-      const map = L.map('map').setView(coords, 16); // Here is where the map will be displayed, so we need an id of map in our html. The L is a main function
+      map = L.map('map').setView(coords, 16); // Here is where the map will be displayed, so we need an id of map in our html. The L is a main function
       //   that leaflet gives us as an entry point. This is a namespace of leaflet API. We can inspect L in the console because L is a global variable in the leaflet.js.
       // If we create a other.js with const name = 'Paolo' and include a tag <script defer src="other.js"></script> in our html before the script.js we will be able
       // to log name in this script.js file.
@@ -72,38 +75,68 @@ if (navigator.geolocation)
 
       console.log(map); // so before we manipulate the map const we stored with the map, lets take a loot at it, first thing to notice is that we have
       // some _ in variables, so they should not be touched. The on method is the built in event listener of the leaflet maps. 3rd level of inheritance to inspect.
-      map.on('click', function (mapEvent) {
-        console.log(mapEvent); // we can see that when we click a object is created, in the object we have latIng with latitude and longitude.
 
-        const { lat, lng } = mapEvent.latlng;
+      // Handling clicks on map
+      map.on('click', function (mapE) {
+        // we renamed the mapEvent to mapE, declared mapEvent in the global scope and assigned mapE to mapEvent.
+        mapEvent = mapE;
+        form.classList.remove('hidden'); // showing the form as we click in any position of the map.
+        inputDistance.focus(); // now as the user clicks it will already select the input distance field in the form, so the user can start typing.
 
-        //1  L.marker([51.5, -0.09])
-        //2     L.marker(coords)
-        //       .addTo(map)
-        //       .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-        //       .openPopup();
-        //   });
-        //3 L.marker([lat, lng]).addTo(map).bindPopup('workout').openPopup(); // This one closes the 'workout' as we click in a new one.
-        // take a look at https://leafletjs.com/reference-1.7.1.html#marker to see the documentation
-        L.marker([lat, lng])
-          .addTo(map)
-          .bindPopup(
-            L.popup({
-              maxWidth: 250,
-              minWidth: 100,
-              autoClose: false,
-              closeOnClick: false,
-              className: 'running-popup', // we will dynamically define latter on. This is on CSS file and allows us to customize the pop ups.
-            })
-          )
-          .setPopupContent('Workout') // Added the text back
-          .openPopup();
+        // console.log(mapEvent); // we can see that when we click a object is created, in the object we have latIng with latitude and longitude.
       });
     },
     function () {
       alert('Could not get your position');
     }
   );
+
+// now we will implement a form submission (w/o checking the data) with a enter from the user.
+form.addEventListener('submit', function (e) {
+  e.preventDefault();
+
+  // Clear input fields
+  inputDistance.value =
+    inputDuration.value =
+    inputCadence.value =
+    inputElevation.value =
+      '';
+
+  // we forgot to put the .value and we got an error of "script.js:102 Uncaught TypeError: Assignment to constant variable.
+  // at HTMLFormElement.<anonymous> (script.js:102)" Immediately i thought of changing const to let, but we need the .value instead.
+
+  const { lat, lng } = mapEvent.latlng;
+
+  //1  L.marker([51.5, -0.09])
+  //2     L.marker(coords)
+  //       .addTo(map)
+  //       .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
+  //       .openPopup();
+  //   });
+  //3 L.marker([lat, lng]).addTo(map).bindPopup('workout').openPopup(); // This one closes the 'workout' as we click in a new one.
+  // take a look at https://leafletjs.com/reference-1.7.1.html#marker to see the documentation
+  L.marker([lat, lng])
+    .addTo(map)
+    .bindPopup(
+      L.popup({
+        maxWidth: 250,
+        minWidth: 100,
+        autoClose: false,
+        closeOnClick: false,
+        className: 'running-popup', // we will dynamically define latter on. This is on CSS file and allows us to customize the pop ups.
+      })
+    )
+    .setPopupContent('Workout') // Added the text back
+    .openPopup();
+});
+
+// Toggling the Cadence and Elevation Gain in the form, if we are running we have cadence, if we are cycling we have elevation gain.
+// we need to select the div parent that contains elev gain and cadence and hide one and remove the hide from the other.
+
+inputType.addEventListener('change', function () {
+  inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
+  inputCadence.closest('.form__row').classList.toggle('form__row--hidden');
+});
 
 //? 228 Displaying a Map Using Leaflet Library.mp4
 
@@ -130,3 +163,8 @@ downloaded the leaflet library.
 //? 229 Displaying a Map Marker.mp4
 
 // display a marker wherever we click on the map.
+
+//? 230 Rendering Workout Input Form.mp4
+
+// Render the workout form whenever the user clicks on the map. The form is already in the html file and has a hidden class by default.
+// So we will do DOM manipulation adding and removing classes.
