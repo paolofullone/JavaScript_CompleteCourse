@@ -1,6 +1,7 @@
 'use strict';
 
 // prettier-ignore
+/*
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
 const form = document.querySelector('.form');
@@ -154,7 +155,7 @@ downloaded the leaflet library.
   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
   crossorigin=""></script>
 
-  */
+/*
 
 //* we also added the DEFER attribute do the <script> to determine the order of execution of the scripts.
 
@@ -175,3 +176,103 @@ downloaded the leaflet library.
 
 // We will also have a App class that will have all the functions and we will protect the functions from the outside code. The events will
 // interact with the functions of this class.
+
+//? 232 Refactoring for Project Architecture.mp4
+
+//* Decided to put all the code here w/o comments.
+
+*/
+const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+
+const form = document.querySelector('.form');
+const containerWorkouts = document.querySelector('.workouts');
+const inputType = document.querySelector('.form__input--type');
+const inputDistance = document.querySelector('.form__input--distance');
+const inputDuration = document.querySelector('.form__input--duration');
+const inputCadence = document.querySelector('.form__input--cadence');
+const inputElevation = document.querySelector('.form__input--elevation');
+
+class App {
+  #map;
+  #mapEvent;
+
+  constructor() {
+    this._getPosition();
+    // form.addEventListener('submit', this._newWorkout); //A event handler function will always have the this keyword of the DOM element onto which it is attached, in this case the form element.
+    // so it will point to form and no longer to the app object.
+    form.addEventListener('submit', this._newWorkout.bind(this));
+
+    inputType.addEventListener('change', this._toggleElevationField);
+  }
+
+  _getPosition() {
+    if (navigator.geolocation)
+      navigator.geolocation.getCurrentPosition(
+        this._loadMap.bind(this), // in a regular function call the this keyword is undefined, so we use bind to define the this keyword.
+        function () {
+          alert('Could not get your position');
+        }
+      );
+  }
+
+  _loadMap(position) {
+    const { latitude } = position.coords;
+    const { longitude } = position.coords;
+    console.log(`https://www.google.com.br/maps/@${latitude},${longitude}`);
+
+    const coords = [latitude, longitude];
+
+    this.#map = L.map('map').setView(coords, 16);
+    L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
+      attribution:
+        '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    }).addTo(this.#map);
+
+    //   console.log(map);
+
+    // Handling clicks on map
+    this.#map.on('click', this._showForm.bind(this));
+  }
+
+  _showForm(mapE) {
+    this.#mapEvent = mapE;
+    form.classList.remove('hidden');
+    inputDistance.focus();
+  }
+
+  _toggleElevationField() {
+    inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
+    inputCadence.closest('.form__row').classList.toggle('form__row--hidden');
+  }
+
+  _newWorkout(e) {
+    e.preventDefault();
+
+    // Clear input fields
+    inputDistance.value =
+      inputDuration.value =
+      inputCadence.value =
+      inputElevation.value =
+        '';
+
+    // Display Marker
+    const { lat, lng } = this.#mapEvent.latlng;
+
+    L.marker([lat, lng])
+      .addTo(this.#map)
+      .bindPopup(
+        L.popup({
+          maxWidth: 250,
+          minWidth: 100,
+          autoClose: false,
+          closeOnClick: false,
+          className: 'running-popup',
+        })
+      )
+      .setPopupContent('Workout')
+      .openPopup();
+  }
+}
+
+// Creating the object
+const app = new App();
