@@ -186,6 +186,7 @@ downloaded the leaflet library.
 class Workout {
   date = new Date();
   id = (Date.now() + '').slice(-10); // in the real world we should use a 3rd party API to create ID's, here we will simply convert the date in string and get the last 10 numbers.
+  clicks = 0;
   constructor(coords, distance, duration) {
     this.coords = coords; // [lat, lng]
     this.distance = distance; // in km
@@ -198,6 +199,9 @@ class Workout {
     const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     this.description = `${this.type[0].toUpperCase()}${this.type.slice(1)} on ${months[this.date.getMonth()]} ${this.date.getDate()}`
     //this.date.getMonth() returns a number, so we use it to define the months array index.
+  }
+  click() {
+    this.clicks++;
   }
 }
 
@@ -249,16 +253,24 @@ const inputElevation = document.querySelector('.form__input--elevation');
 // We could put everything inside the App class, however we would always have to use this.inputType etc.
 class App {
   #map;
+  #mapZoomLevel = 16;
   #mapEvent;
   #workouts = []; // here we are using the class fields specification, the common approach would be create a this.workouts = [] inside the constructor.
 
   constructor() {
+    // Get user's position
     this._getPosition();
+
     // form.addEventListener('submit', this._newWorkout); //A event handler function will always have the this keyword of the DOM element onto which it is attached, in this case the form element.
     // so it will point to form and no longer to the app object.
-    form.addEventListener('submit', this._newWorkout.bind(this));
 
+    // Get data from local storage
+    this._getLocalStorage();
+
+    // Attach event handlers
+    form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleElevationField);
+    containerWorkouts.addEventListener('click', this._moveToPopup.bind(this)); // event delegation, we want to center the screen to the clicked workout, but the workout doesn't exist yet.
   }
 
   _getPosition() {
@@ -274,15 +286,20 @@ class App {
   _loadMap(position) {
     const { latitude } = position.coords;
     const { longitude } = position.coords;
-    console.log(`https://www.google.com.br/maps/@${latitude},${longitude}`);
+    // console.log(`https://www.google.com.br/maps/@${latitude},${longitude}`);
 
     const coords = [latitude, longitude];
 
-    this.#map = L.map('map').setView(coords, 16);
+    this.#map = L.map('map').setView(coords, this.#mapZoomLevel);
     L.tileLayer('https://{s}.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png', {
       attribution:
         '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     }).addTo(this.#map);
+
+    // Rendering the stored workouts in the map.
+    this.#workouts.forEach(work => {
+      this._renderWorkoutMarker(work);
+    });
 
     //   console.log(map);
 
@@ -368,7 +385,7 @@ class App {
 
     //* Add new object to workout array.
     this.#workouts.push(workout);
-    console.log(workout);
+    // console.log(workout);
 
     //* Render workout on map as marker
     this._renderWorkout(workout);
@@ -378,6 +395,9 @@ class App {
 
     // Hide form + Clear input fields
     this._hideForm();
+
+    // Set local storage to all workouts
+    this._setLocalStorage();
   }
 
   _renderWorkoutMarker(workout) {
@@ -446,6 +466,60 @@ class App {
 
     form.insertAdjacentHTML('afterend', html);
   }
+
+  _moveToPopup(e) {
+    const workoutEl = e.target.closest('.workout');
+    // console.log(workoutEl);
+
+    if (!workoutEl) return; // if we don't have a workout element, return immediately.
+
+    // find the clicked workout.
+    const workout = this.#workouts.find(
+      work => work.id === workoutEl.dataset.id
+    );
+    // console.log(workout);
+
+    // now let's select the map, center on it, define the zoom level again and some options available at leaflet documentation.
+    this.#map.setView(workout.coords, this.#mapZoomLevel, {
+      animate: true,
+      pan: {
+        duration: 1,
+      },
+    });
+
+    // Using the public interface
+    // workout.click(); // Storing the number of clicks. Not shown anywhere...
+    // In lecture 237 after the implementation of restoring the data from the local storage, we convert the object to a string, them restore it from the string to an object again
+    // then we displayed in the list and the marker on map, however when we do that, we loose the prototype chain of the object, one solution is to recreate the object using the
+    // data that comes from the string, but we will not do it here, we will simply disable workout.click.
+  }
+  // localStorage is an API provided by the browser. It takes a name 'workout' and the 2nd argument is a string that we want to store and will be associated with the name
+  // in a key value structure.
+  _setLocalStorage() {
+    localStorage.setItem('workouts', JSON.stringify(this.#workouts)); // stringify is a method that converts any object in JS to string.
+    //* localStorage is a very simple API only advised to use for small amounts of data.
+  }
+
+  _getLocalStorage() {
+    const data = JSON.parse(localStorage.getItem('workouts')); // JSON.parse is the opposite of JSON.stringify, here we take it out and display.
+    // console.log(data);
+
+    if (!data) return; // guard clause that if we don't have any data we return because const data will be undefined.
+
+    this.#workouts = data; // when this script starts workouts is defined as empty array, here we restore the array from data.
+
+    // Rendering the stored workouts in the list.
+    this.#workouts.forEach(work => {
+      this._renderWorkout(work);
+      // this._renderWorkoutMarker(work); //  to add the markers to the screen, it doesn't work here because at this point the map is not yet created right at the beginning
+      // when the application first loaded. First we got to take the user geolocation, then we load the map.
+    });
+  }
+  // we will use this reset in the console. we can use app.reset()
+  reset() {
+    localStorage.removeItem('workouts');
+    location.reload();
+  }
 }
 
 // Creating the object
@@ -469,4 +543,8 @@ const app = new App();
 
 //? 236 Move to Marker On Click.mp4
 
-// Feature to move the map to the position of the workout as we click to the
+// Feature to move the map to the position of that workout.
+
+//? 237 Working with localStorage.mp4
+
+// use local storage to persist data and keep it even if the browser is reloaded.
