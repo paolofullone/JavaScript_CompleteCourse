@@ -192,6 +192,49 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
+class Workout {
+  date = new Date();
+  id = (Date.now() + '').slice(-10); // in the real world we should use a 3rd party API to create ID's, here we will simply convert the date in string and get the last 10 numbers.
+  constructor(coords, distance, duration) {
+    this.coords = coords; // [lat, lng]
+    this.distance = distance; // in km
+    this.duration = duration; // in min
+  }
+}
+
+class Running extends Workout {
+  constructor(coords, distance, duration, cadence) {
+    super(coords, distance, duration);
+    this.cadence = cadence;
+    this.calcPace();
+  }
+  calcPace() {
+    // min/km
+    this.pace = this.duration / this.distance;
+    return this.pace;
+  }
+}
+
+class Cycling extends Workout {
+  constructor(coords, distance, duration, elevationGain) {
+    super(coords, distance, duration);
+    this.elevationGain = elevationGain;
+    this.calcSpeed();
+  }
+  calcSpeed() {
+    // km/h
+    this.speed = this.distance / (this.duration / 60);
+    return this.speed;
+  }
+}
+
+// Testing running and cycling classes.
+// const run1 = new Running([39, -12], 5.5, 20, 195);
+// const cycling1 = new Cycling([39, -12], 27, 95, 525);
+// console.log(run1, cycling1);
+
+///////////////////////////////////////////////////////////////////////////////////
+// Application Architecture
 class App {
   #map;
   #mapEvent;
@@ -276,3 +319,9 @@ class App {
 
 // Creating the object
 const app = new App();
+
+//? 233 Managing Workout Data_ Creating Classes.mp4
+
+// Based on our Mapty-Architecture-part-1 we have to implement 3 classes, Workout, Running and Cycling.
+// Workout has an id, distance, duration, coords and date.
+// Running has cadence and pace, Cycling has elevationGain and speed.
