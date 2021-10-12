@@ -548,3 +548,21 @@ const app = new App();
 //? 237 Working with localStorage.mp4
 
 // use local storage to persist data and keep it even if the browser is reloaded.
+
+//? 238
+/*
+1 - Edit a workout
+2 - Delete a workout
+3 - Delete all workouts
+4 - Sort workouts by a certain field
+5 - Rebuild Running and Cycling objects coming from local storage to restore clicks.
+6 - Realistic error messages and confirmation messages. Fade out after some time.
+
+Hard Ones
+7 - Ability to position the map to show all workouts (very hard); google leaflet library
+8 - Draw lines and shapes instead of just points. (very hard); 
+These 2 depends of the next section:
+9 -  Geocode location from coordinates ("")
+10 - Display  weather data for workout time and place.
+
+*/
