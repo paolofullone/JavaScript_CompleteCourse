@@ -184,14 +184,6 @@ downloaded the leaflet library.
 */
 const months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 
-const form = document.querySelector('.form');
-const containerWorkouts = document.querySelector('.workouts');
-const inputType = document.querySelector('.form__input--type');
-const inputDistance = document.querySelector('.form__input--distance');
-const inputDuration = document.querySelector('.form__input--duration');
-const inputCadence = document.querySelector('.form__input--cadence');
-const inputElevation = document.querySelector('.form__input--elevation');
-
 class Workout {
   date = new Date();
   id = (Date.now() + '').slice(-10); // in the real world we should use a 3rd party API to create ID's, here we will simply convert the date in string and get the last 10 numbers.
@@ -203,6 +195,7 @@ class Workout {
 }
 
 class Running extends Workout {
+  type = 'running'; // same of this.type = 'cycling' inside the constructor below.
   constructor(coords, distance, duration, cadence) {
     super(coords, distance, duration);
     this.cadence = cadence;
@@ -216,6 +209,7 @@ class Running extends Workout {
 }
 
 class Cycling extends Workout {
+  type = 'cycling';
   constructor(coords, distance, duration, elevationGain) {
     super(coords, distance, duration);
     this.elevationGain = elevationGain;
@@ -235,9 +229,19 @@ class Cycling extends Workout {
 
 ///////////////////////////////////////////////////////////////////////////////////
 // Application Architecture
+
+const form = document.querySelector('.form');
+const containerWorkouts = document.querySelector('.workouts');
+const inputType = document.querySelector('.form__input--type');
+const inputDistance = document.querySelector('.form__input--distance');
+const inputDuration = document.querySelector('.form__input--duration');
+const inputCadence = document.querySelector('.form__input--cadence');
+const inputElevation = document.querySelector('.form__input--elevation');
+// We could put everything inside the App class, however we would always have to use this.inputType etc.
 class App {
   #map;
   #mapEvent;
+  #workouts = []; // here we are using the class fields specification, the common approach would be create a this.workouts = [] inside the constructor.
 
   constructor() {
     this._getPosition();
@@ -289,19 +293,76 @@ class App {
   }
 
   _newWorkout(e) {
+    // Helper function => takes any valid number of parameters (...inputs) and when we use the ... we get an array
+    const validInputs = (...inputs) =>
+      inputs.every(inp => Number.isFinite(inp)); // this will loop over the array and return if the number is finite or not. And the every will only return true
+    // if the Number.isFinite(inp) was true for all the elements in the array. The the arrow function returns true, if one element of the array is false, the
+    // arrow function will return false.
+
+    // Helper function 2 => check for positive numbers.
+    const allPositive = (...inputs) => inputs.every(inp => inp > 0);
+
     e.preventDefault();
 
-    // Clear input fields
+    //* Get data from the form
+    const type = inputType.value; // In the HTML we have a <option value=...> for each element.
+    const distance = +inputDistance.value; // These values come as strings, the + signs converts them to numbers.
+    const duration = +inputDuration.value;
+    const { lat, lng } = this.#mapEvent.latlng;
+    let workout; // workout was defined inside the running block, so due to scope chain is not available outside, and we need it outside in order to push
+    // the new workout to the workouts array. So we should declare it here.
+
+    //* If workout is Running, create running object.
+    if (type === 'running') {
+      const cadence = +inputCadence.value;
+      // Check if data is valid => we will use a guard clause, we will verify the opposite of what we are interested in, if the opposite is true
+      // we return the function immediately. This is also a trend in modern JS.
+      if (
+        // (!Number.isFinite(distance) ||
+        // (!Number.isFinite(duration) ||
+        // (!Number.isFinite(cadence)
+        !validInputs(distance, duration, cadence) ||
+        !allPositive(distance, duration, cadence)
+      )
+        // if the ONE of the distance, duration or cadence is NOT a number (validInputs) or NOT positive number (allPositive).
+        return alert('Inputs have to be positive numbers!');
+
+      workout = new Running([lat, lng], distance, duration, cadence);
+    }
+
+    //* If workout is Cycling, create cycling object.
+    if (type === 'cycling') {
+      const elevation = +inputElevation.value;
+      if (
+        !validInputs(distance, duration, elevation) ||
+        !allPositive(distance, duration) // the elevation can be negative.
+      )
+        return alert('Inputs have to be positive numbers!');
+
+      workout = new Cycling([lat, lng], distance, duration, elevation);
+    }
+
+    //* Here we decided to use 2 if elements instead of if...else, this is more clean and modern JS approach.
+
+    //* Add new object to workout array.
+    this.#workouts.push(workout);
+    console.log(workout);
+
+    //* Render workout on map as marker
+    this.renderWorkoutMarker(workout);
+
+    // Render workout on list
+
+    // Hide form + Clear input fields
     inputDistance.value =
       inputDuration.value =
       inputCadence.value =
       inputElevation.value =
         '';
+  }
 
-    // Display Marker
-    const { lat, lng } = this.#mapEvent.latlng;
-
-    L.marker([lat, lng])
+  renderWorkoutMarker(workout) {
+    L.marker(workout.coords)
       .addTo(this.#map)
       .bindPopup(
         L.popup({
@@ -309,10 +370,10 @@ class App {
           minWidth: 100,
           autoClose: false,
           closeOnClick: false,
-          className: 'running-popup',
+          className: `${workout.type}-popup`,
         })
       )
-      .setPopupContent('Workout')
+      .setPopupContent('workout')
       .openPopup();
   }
 }
@@ -325,3 +386,9 @@ const app = new App();
 // Based on our Mapty-Architecture-part-1 we have to implement 3 classes, Workout, Running and Cycling.
 // Workout has an id, distance, duration, coords and date.
 // Running has cadence and pace, Cycling has elevationGain and speed.
+
+//? 234 Creating a New Workout.mp4
+
+// Implement the feature of creating a new workout from the UI
+// At the beginning of this lecture we already put everything planned on initial architecture in the code, still need to implement some methods, but they are
+// already in the code.
