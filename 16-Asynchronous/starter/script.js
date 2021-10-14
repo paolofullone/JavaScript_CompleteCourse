@@ -103,7 +103,7 @@ getCountryAndNeighbour('usa');
 //     }, 1000);
 //   }, 1000);
 // }, 1000);
-*/
+
 
 //? 248 - Promises and the Fetch API
 
@@ -130,20 +130,31 @@ getCountryAndNeighbour('usa');
 // };
 
 // refactoring removing the console.logs and transforming into arrow functions.
+// so we replaced the code written before with callbacks, event listeners etc by this small block of code.
+*/
+
+const getJSON = function (url, errorMsg = 'Something went wrong') {
+  return fetch(url).then(response => {
+    if (!response.ok) throw new Error(`${errorMsg} (${response.status})`);
+
+    return response.json();
+  });
+};
 
 const getCountryData = function (country) {
   // country 1
-  fetch(`https://restcountries.com/v2/name/${country}`)
-    .then(response => response.json())
+  getJSON(`https://restcountries.com/v2/name/${country}`, 'Country not found.')
     .then(data => {
       renderCountry(data[0]);
       const neighbour = data[0].borders[0];
-      if (!neighbour) return;
+      if (!neighbour) throw new Error('No Neighbour found');
 
       // country 2
-      return fetch(`https://restcountries.com/v2/alpha/${neighbour}`);
+      return getJSON(
+        `https://restcountries.com/v2/alpha/${neighbour}`,
+        'Country not found.'
+      );
     })
-    .then(response => response.json())
     .then(data => renderCountry(data, 'neighbour'))
     .catch(err => {
       console.error(`${err} 💥💥💥`);
@@ -156,17 +167,45 @@ const getCountryData = function (country) {
   // err.message is a method available in all error messages.
 };
 
-// then is triggered when promise returns true, .catch when returns false and .finally always (true or false)
+// const getCountryData = function (country) {
+//   // country 1
+//   fetch(`https://restcountries.com/v2/name/${country}`)
+//     .then(response => {
+//       console.log(response);
+//       if (!response.ok)
+//         throw new Error(`Country not found (${response.status})`);
+//       return response.json();
+//     })
+//     .then(data => {
+//       renderCountry(data[0]);
+//       const neighbour = data[0].borders[0];
+//       if (!neighbour) return;
+
+//       // country 2
+//       return fetch(`https://restcountries.com/v2/alpha/${neighbour}`);
+//     })
+//     .then(response => response.json())
+//     .then(data => renderCountry(data, 'neighbour'))
+//     .catch(err => {
+//       console.error(`${err} 💥💥💥`);
+//       renderError(`Something went wrong 💥💥💥  ${err.message}. Try again!`);
+//     })
+//     .finally(() => {
+//       countriesContainer.style.opacity = 1;
+//     });
+//   // Handling the error (fetching the error) for all fetch's with .catch
+//   // err.message is a method available in all error messages.
+// };
+
+// .then is triggered when promise returns true, .catch when returns false and .finally always (true or false)
 
 // now we set the network to offline (network tab) and we get a Uncaught (in promise) error.
 btn.addEventListener('click', function () {
-  getCountryData('portugal');
+  getCountryData('australia');
 });
 
-getCountryData('scalabosh'); // this returns a "cannot read properties of undefined (reading 'flag')" but the error is that theres no
+getCountryData('brazil'); // this returns a "cannot read properties of undefined (reading 'flag')" but the error is that theres no
 // scalabosh country, so we will see how to handle this error.
-
-// so we replaced the code written before with callbacks, event listeners etc by this small block of code.
 
 // 249 - Chain promises to render the initial country and neighbour. chain 2 AJAX
 
@@ -181,3 +220,5 @@ getCountryData('scalabosh'); // this returns a "cannot read properties of undefi
 //* we get a alert with 100.
 
 //* 251 - Handling rejected promises (errors in promises)
+
+//* 252 - Throwing errors manually

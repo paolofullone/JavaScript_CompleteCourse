@@ -48,6 +48,4 @@ function getCountryData(countryName) {
   });
 }
 
-getCountryData('brazil');
-getCountryData('estonia');
-getCountryData('lebanon');
+getCountryData('banana');
