@@ -33,8 +33,14 @@ const renderCountry = function (data, className = '') {
       </article>
           `;
   countriesContainer.insertAdjacentHTML('beforeend', html);
-  countriesContainer.style.opacity = 1;
+  // countriesContainer.style.opacity = 1; // removed and included in the .finally method.
 };
+
+const renderError = function (msg) {
+  countriesContainer.insertAdjacentText('beforeend', msg);
+  // countriesContainer.style.opacity = 1; // removed and included in the .finally method.
+};
+
 /*
 const getCountryAndNeighbour = function (country) {
   // AJAX call country 1
@@ -126,10 +132,52 @@ getCountryAndNeighbour('usa');
 // refactoring removing the console.logs and transforming into arrow functions.
 
 const getCountryData = function (country) {
+  // country 1
   fetch(`https://restcountries.com/v2/name/${country}`)
     .then(response => response.json())
-    .then(data => renderCountry(data[0]));
+    .then(data => {
+      renderCountry(data[0]);
+      const neighbour = data[0].borders[0];
+      if (!neighbour) return;
+
+      // country 2
+      return fetch(`https://restcountries.com/v2/alpha/${neighbour}`);
+    })
+    .then(response => response.json())
+    .then(data => renderCountry(data, 'neighbour'))
+    .catch(err => {
+      console.error(`${err} 💥💥💥`);
+      renderError(`Something went wrong 💥💥💥  ${err.message}. Try again!`);
+    })
+    .finally(() => {
+      countriesContainer.style.opacity = 1;
+    });
+  // Handling the error (fetching the error) for all fetch's with .catch
+  // err.message is a method available in all error messages.
 };
-getCountryData('portugal');
+
+// then is triggered when promise returns true, .catch when returns false and .finally always (true or false)
+
+// now we set the network to offline (network tab) and we get a Uncaught (in promise) error.
+btn.addEventListener('click', function () {
+  getCountryData('portugal');
+});
+
+getCountryData('scalabosh'); // this returns a "cannot read properties of undefined (reading 'flag')" but the error is that theres no
+// scalabosh country, so we will see how to handle this error.
 
 // so we replaced the code written before with callbacks, event listeners etc by this small block of code.
+
+// 249 - Chain promises to render the initial country and neighbour. chain 2 AJAX
+
+// The then method always return a value, if we return something using return then the value becomes the fulfillment value
+// of the return promise.
+
+//* so if we replace fetch(`https://restcountries.com/v2/alpha/${neighbour}`); by return 100 and chain another then
+//* method:
+//  return 100
+// })
+// .then (data => alert(data));
+//* we get a alert with 100.
+
+//* 251 - Handling rejected promises (errors in promises)
