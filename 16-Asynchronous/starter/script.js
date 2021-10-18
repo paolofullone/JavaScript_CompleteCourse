@@ -1,5 +1,5 @@
 'use strict';
-/*
+
 const btn = document.querySelector('.btn-country');
 const countriesContainer = document.querySelector('.countries');
 
@@ -12,7 +12,7 @@ const countriesContainer = document.querySelector('.countries');
 // CORS stands for cross origin resource sharing, we should look for the ones with YES or Unknown. Without CORS we cannot access a
 // 3rd party api from our code.
 */
-/*
+
 const renderCountry = function (data, className = '') {
   const html = `
       <article class="country ${className}">
@@ -343,7 +343,7 @@ console.log('Test end');
 //256 - Building a simple promise.
 
 // Lets say we have a lottery that has 50% odd win/loose, and the draw takes only 2 seconds.
-
+/*
 const lotteryPromise = new Promise(function (resolve, reject) {
   console.log('Lottery draw is happening 🔮');
   setTimeout(function () {
@@ -401,3 +401,93 @@ wait(1)
 
 Promise.resolve('abc').then(x => console.log(x)); // this will resolve immediately.
 Promise.reject(new Error(`Problem`)).catch(x => console.log(x)); // this will resolve immediately.
+*/
+
+// 257 - Promisifying the geolocation api
+// Geolocation takes 2 callback functions, one for success, one for failure. In case user doest not allow access to location.
+
+//1
+// navigator.geolocation.getCurrentPosition(
+//   position => console.log(position),
+//   err => console.log(err)
+// );
+// console.log('Getting position...'); // just to prove that geolocation is executed in the web API environment in the browser, asynchronous.
+
+//2
+// const getPosition = function () {
+//   return new Promise(function (resolve, reject) {
+//
+//});
+// };
+
+//3
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    // navigator.geolocation.getCurrentPosition(
+    //   position => resolve(position),
+    //   err => reject(err)
+    // above 3 lines of code is the same as:
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+// getPosition().then(pos => console.log(pos));
+
+// In the coding challenge we passed a latitude and longitude to determine our location, now we will do it based on our geolocation.
+
+const whereAmI = function () {
+  getPosition()
+    .then(pos => {
+      // console.log(pos.coords);
+      const { latitude: lat, longitude: lng } = pos.coords; // destructuring and creating new variables of an object.
+      return fetch(
+        `https://geocode.xyz/${lat},${lng}?geoit=json&auth=278829738579047305467x63888 `
+      );
+    })
+    .then(res => {
+      // console.log(res);
+      if (!res.ok) throw new Error(`Problem with geocoding ${res.status}`);
+      return res.json();
+    })
+    .then(data => {
+      console.log(data);
+      console.log(`You are in ${data.city}, ${data.country}`);
+      return fetch(`https://restcountries.com/v2/name/${data.country}`);
+    })
+    .then(res => {
+      if (!res.ok) throw new Error(`Country not found (${res.status})`);
+
+      return res.json();
+    })
+    .then(data => renderCountry(data[0]))
+    .catch(err => console.error(`${err.message} 💥`));
+};
+
+btn.addEventListener('click', whereAmI);
+
+// so we can promisify all kinds of asynchronous stuff in JS.
+
+///////////////////////////////////////
+// Coding Challenge #2
+
+/* 
+Build the image loading functionality that I just showed you on the screen.
+
+Tasks are not super-descriptive this time, so that you can figure out some stuff on your own. Pretend you're working on your own 😉
+
+PART 1
+1. Create a function 'createImage' which receives imgPath as an input. This function returns a promise which creates a new image (use document.createElement('img')) and sets the .src attribute to the provided image path. When the image is done loading, append it to the DOM element with the 'images' class, and resolve the promise. The fulfilled value should be the image element itself. In case there is an error loading the image ('error' event), reject the promise.
+
+If this part is too tricky for you, just watch the first part of the solution.
+
+PART 2
+2. Comsume the promise using .then and also add an error handler;
+3. After the image has loaded, pause execution for 2 seconds using the wait function we created earlier;
+4. After the 2 seconds have passed, hide the current image (set display to 'none'), and load a second image (HINT: Use the image element returned by the createImage promise to hide the current image. You will need a global variable for that 😉);
+5. After the second image has loaded, pause execution for 2 seconds again;
+6. After the 2 seconds have passed, hide the current image.
+
+TEST DATA: Images in the img folder. Test the error handler by passing a wrong image path. Set the network speed to 'Fast 3G' in the dev tools Network tab, otherwise images load too fast.
+
+GOOD LUCK 😀
+*/
