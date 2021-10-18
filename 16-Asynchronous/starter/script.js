@@ -342,11 +342,62 @@ console.log('Test end');
 
 //256 - Building a simple promise.
 
-// Lets say we
+// Lets say we have a lottery that has 50% odd win/loose, and the draw takes only 2 seconds.
+
 const lotteryPromise = new Promise(function (resolve, reject) {
-  if (Math.random() >= 0.5) {
-    resolve('You win 💰');
-  } else {
-    reject('You lost your 💰');
-  }
+  console.log('Lottery draw is happening 🔮');
+  setTimeout(function () {
+    if (Math.random() >= 0.5) {
+      resolve('You WON 💰');
+    } else {
+      reject(new Error('You lost your 💰')); // we can have as error or just console.log.
+    }
+  }, 2000);
 });
+
+lotteryPromise.then(res => console.log(res)).catch(err => console.error(err));
+
+// The resolved value of the promise is You won 💰, the err will be You lost your 💰
+// With the setTimeout we encapsulated a asynchronous event in a promise.
+
+// Promisifying setTimeout.
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+// With this function we can replace the callback hell:
+wait(1)
+  .then(() => {
+    console.log('1 second(s) passed.');
+    return wait(1);
+  })
+  .then(() => {
+    console.log('2 second(s) passed.');
+    return wait(1);
+  })
+  .then(() => {
+    console.log('3 second(s) passed.');
+    return wait(1);
+  })
+  .then(() => console.log('4 second(s) passed.'));
+
+// setTimeout(() => {
+//   console.log('1 second(s) passed.');
+//   setTimeout(() => {
+//     console.log('2 second(s) passed.');
+//     setTimeout(() => {
+//       console.log('3 second(s) passed.');
+//       setTimeout(() => {
+//         console.log('4 second(s) passed.');
+//         setTimeout(() => {
+//           console.log('5 second(s) passed.');
+//         }, 1000);
+//       }, 1000);
+//     }, 1000);
+//   }, 1000);
+// }, 1000);
+
+Promise.resolve('abc').then(x => console.log(x)); // this will resolve immediately.
+Promise.reject(new Error(`Problem`)).catch(x => console.log(x)); // this will resolve immediately.
