@@ -575,3 +575,87 @@ createImage('img/img-1.jpg')
   .then(() => (img.style.display = 'none'))
   .catch(err => console.error(err.message));
   */
+
+//259 - Chaining promises with async / await.
+
+// when we add async to the function, it will keep running in the background while performing the code inside of it.
+// when the function is done it will return a promise.
+/*
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+const whereAmI = async function () {
+  // fetch(`https://restcountries.com/v2/name/${country}`).then(res =>
+  //   console.log(res)
+  // );
+
+  // that's the same of:
+  // const res = await fetch(`https://restcountries.com/v2/name/${country}`);
+  // console.log(res);
+
+  // Geolocation
+  const pos = await getPosition();
+  const { latitude: lat, longitude: lng } = pos.coords;
+
+  // Reverse Geocoding
+  const resGeo = await fetch(
+    `https://geocode.xyz/${lat},${lng}?geoit=json&auth=278829738579047305467x63888`
+  );
+  const dataGeo = await resGeo.json();
+  console.log(dataGeo);
+
+  // Country Data
+  const res = await fetch(
+    `https://restcountries.com/v2/name/${dataGeo.country}`
+  ); // await will stop the code execution until the promise is resolved.
+  const data = await res.json(); // w/o await it returns error
+  console.log(data);
+  renderCountry(data[0]);
+};
+
+// the await does not block the code execution in the main thread, because we are stopping the execution of the async function.
+// before async / await we had to wait for the fetch before assign the result to a const. this looks like normal synchronous code
+// however behind the scenes it is asynchronous. we are still using promises, this is a different way of consuming them.
+
+whereAmI();
+console.log('this will be printed first');
+*/
+
+// w/o comments
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+const whereAmI = async function () {
+  // Geolocation
+  const pos = await getPosition();
+  const { latitude: lat, longitude: lng } = pos.coords;
+
+  // Reverse Geocoding
+  const resGeo = await fetch(
+    `https://geocode.xyz/${lat},${lng}?geoit=json&auth=278829738579047305467x63888`
+  );
+  const dataGeo = await resGeo.json();
+  console.log(dataGeo);
+
+  // Country Data
+  const res = await fetch(
+    `https://restcountries.com/v2/name/${dataGeo.country}`
+  );
+  const data = await res.json();
+  console.log(data);
+  renderCountry(data[0]);
+};
+
+whereAmI();
+console.log('this will be printed first');
+
+// we have 5 promises in the above code and it looks synchronous, w/o all the callback functions.
+
+//* async / await is just synthetic sugar over consuming premises.
