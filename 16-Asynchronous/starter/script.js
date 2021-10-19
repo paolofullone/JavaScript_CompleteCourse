@@ -671,7 +671,7 @@ console.log('this will be printed first');
 // } catch (err) {
 //   alert(err.message);
 // }
-
+/*
 const getPosition = function () {
   return new Promise(function (resolve, reject) {
     navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -708,5 +708,80 @@ const whereAmI = async function () {
 
 whereAmI();
 console.log('this will be printed first');
+*/
+//* Never ignore handling errors specially in asynchronous functions.
 
-//* Never ignore handling errors specialy in asynchronous functions.
+//261 - returning values from async functions
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+const whereAmI = async function () {
+  try {
+    // Geolocation
+    const pos = await getPosition();
+    const { latitude: lat, longitude: lng } = pos.coords;
+
+    // Reverse Geocoding
+    const resGeo = await fetch(
+      `https://geocode.xyz/${lat},${lng}?geoit=json&auth=278829738579047305467x63888`
+    );
+    if (!resGeo.ok) throw new Error('Problem getting location data');
+    const dataGeo = await resGeo.json();
+
+    // Country Data
+    const res = await fetch(
+      `https://restcountries.com/v2/name/${dataGeo.country}` // add something 'countryxxxx' to force an error.
+    );
+    if (!resGeo.ok) throw new Error('Problem getting country');
+    const data = await res.json();
+    renderCountry(data[0]);
+
+    return `You are in ${dataGeo.city}, ${dataGeo.state}, ${dataGeo.country}.`;
+  } catch (err) {
+    console.error(`${err} 💥`);
+    renderError(`💥 ${err.message}`);
+
+    // Reject promise returned from thea async function.
+    throw err;
+  }
+};
+/*
+console.log('1: I will get location:');
+
+// const city = whereAmI();
+// console.log(city); // the async function returned a promise, not the string we created in the return.
+// So JS cannot know what will be returned, so it only returns a promise.
+
+// Now let's replace the promise by the resolved value.
+// This solution is mixing the old and the new way of working with promises.
+
+whereAmI()
+  .then(city => console.log(`2: ${city}`))
+  .catch(err => console.error(`3: ${err.message}`)) // even though there was an error in the async function, the promise that it returns
+  // is still fulfilled, if we want to be able to catch that the error we have to rethrow the error with a reject promise returned from the async function
+  // async function.
+  .finally(() => console.log('3: Finished getting location.'));
+*/
+
+// Lets replace that using async IIFE:
+// console.log('1: I will get location:');
+
+// whereAmI()
+//   .then(city => console.log(`2: ${city}`))
+//   .catch(err => console.error(`2: ${err.message}`))
+//   .finally(() => console.log('3: Finished getting location.'));
+
+console.log('1: I will get location:');
+(async function () {
+  try {
+    const city = await whereAmI();
+    console.log(`2: ${city}`);
+  } catch (err) {
+    console.error(`2: ${err.message}`);
+  }
+  console.log('3: Finished getting location.');
+})();
