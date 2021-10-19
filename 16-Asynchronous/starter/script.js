@@ -625,7 +625,7 @@ console.log('this will be printed first');
 */
 
 // w/o comments
-
+/*
 const getPosition = function () {
   return new Promise(function (resolve, reject) {
     navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -655,7 +655,58 @@ const whereAmI = async function () {
 
 whereAmI();
 console.log('this will be printed first');
-
+*/
 // we have 5 promises in the above code and it looks synchronous, w/o all the callback functions.
 
 //* async / await is just synthetic sugar over consuming premises.
+
+// 260 - async await error handling
+
+// How the try method works:
+
+// try {
+//   let y = 1;
+//   const x = 2;
+//   x = 3;
+// } catch (err) {
+//   alert(err.message);
+// }
+
+const getPosition = function () {
+  return new Promise(function (resolve, reject) {
+    navigator.geolocation.getCurrentPosition(resolve, reject);
+  });
+};
+
+const whereAmI = async function () {
+  try {
+    // Geolocation
+    const pos = await getPosition();
+    const { latitude: lat, longitude: lng } = pos.coords;
+
+    // Reverse Geocoding
+    const resGeo = await fetch(
+      `https://geocode.xyz/${lat},${lng}?geoit=json&auth=278829738579047305467x63888`
+    );
+    if (!resGeo.ok) throw new Error('Problem getting location data');
+    const dataGeo = await resGeo.json();
+    console.log(dataGeo);
+
+    // Country Data
+    const res = await fetch(
+      `https://restcountries.com/v2/name/${dataGeo.country}`
+    );
+    if (!resGeo.ok) throw new Error('Problem getting country');
+    const data = await res.json();
+    console.log(data);
+    renderCountry(data[0]);
+  } catch (err) {
+    console.error(`${err} 💥`);
+    renderError(`💥 ${err.message}`);
+  }
+};
+
+whereAmI();
+console.log('this will be printed first');
+
+//* Never ignore handling errors specialy in asynchronous functions.
