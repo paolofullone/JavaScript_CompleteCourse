@@ -133,6 +133,7 @@ getCountryAndNeighbour('usa');
 // refactoring removing the console.logs and transforming into arrow functions.
 // so we replaced the code written before with callbacks, event listeners etc by this small block of code.
 
+*/
 
 const getJSON = function (url, errorMsg = 'Something went wrong') {
   return fetch(url).then(response => {
@@ -168,6 +169,7 @@ const getCountryData = function (country) {
   // err.message is a method available in all error messages.
 };
 
+/*
 // const getCountryData = function (country) {
 //   // country 1
 //   fetch(`https://restcountries.com/v2/name/${country}`)
@@ -712,7 +714,7 @@ console.log('this will be printed first');
 //* Never ignore handling errors specially in asynchronous functions.
 
 //261 - returning values from async functions
-
+/*
 const getPosition = function () {
   return new Promise(function (resolve, reject) {
     navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -774,7 +776,7 @@ whereAmI()
 //   .then(city => console.log(`2: ${city}`))
 //   .catch(err => console.error(`2: ${err.message}`))
 //   .finally(() => console.log('3: Finished getting location.'));
-
+/*
 console.log('1: I will get location:');
 (async function () {
   try {
@@ -785,3 +787,52 @@ console.log('1: I will get location:');
   }
   console.log('3: Finished getting location.');
 })();
+*/
+
+// 262 - running promises in parallel
+
+//* 1
+// const get3Countries = async function (c1, c2, c3) {
+//   try {
+//     const [data1] = await getJSON(`https://restcountries.com/v2/name/${c1}`);
+//     const [data2] = await getJSON(`https://restcountries.com/v2/name/${c2}`);
+//     const [data3] = await getJSON(`https://restcountries.com/v2/name/${c3}`);
+
+//     console.log(data1.capital, data2.capital, data3.capital);
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
+
+// get3Countries('brazil', 'portugal', 'spain');
+// get3Countries('canada', 'australia', 'south africa');
+
+//* If we inspect the network tab we will see that first we load brazil data, then portugal and in the end spain. It doesn't make a lot of sense.
+
+//*2 - Run in parallel instead of in sequence.
+const get3Countries = async function (c1, c2, c3) {
+  try {
+    // const [data1] = await getJSON(`https://restcountries.com/v2/name/${c1}`);
+    // const [data2] = await getJSON(`https://restcountries.com/v2/name/${c2}`);
+    // const [data3] = await getJSON(`https://restcountries.com/v2/name/${c3}`);
+
+    const data = await Promise.all([
+      getJSON(`https://restcountries.com/v2/name/${c1}`),
+      getJSON(`https://restcountries.com/v2/name/${c2}`),
+      getJSON(`https://restcountries.com/v2/name/${c3}`),
+    ]);
+    // Recap: the getJSON function encapsulates the fetch request, the error handling if an error occur it will immediately throw an error,
+    // and also convert the response to a json.
+
+    // console.log(data);
+    console.log(data.map(data => data[0].capital));
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+get3Countries('brazil', 'portugal', 'spain');
+
+//* Important to note that if one promise rejects, the hole promise.all rejects as well.
+//* When we have multiple operations that don't depend on one another, we should always run in parallel. It saved more or less 1 second
+//* in the loading time of the page.
