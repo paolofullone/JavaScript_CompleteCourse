@@ -790,7 +790,7 @@ console.log('1: I will get location:');
 */
 
 // 262 - running promises in parallel
-
+/*
 //* 1
 // const get3Countries = async function (c1, c2, c3) {
 //   try {
@@ -836,3 +836,190 @@ get3Countries('brazil', 'portugal', 'spain');
 //* Important to note that if one promise rejects, the hole promise.all rejects as well.
 //* When we have multiple operations that don't depend on one another, we should always run in parallel. It saved more or less 1 second
 //* in the loading time of the page.
+*/
+
+// 263 - other promise combinators, race, allSettled and race.
+/*
+// Promise.race receives an array of promises and returns a promise. As soon as a promise is settled (a value is available)
+// the promise.race returns, doesn't matter if the promise is rejected or resolved.
+
+// (async function () {
+//   const res = await Promise.race([
+//     getJSON(`https://restcountries.com/v2/name/italy`),
+//     getJSON(`https://restcountries.com/v2/name/brazil`),
+//     getJSON(`https://restcountries.com/v2/name/mexico`),
+//   ]);
+//   console.log(res[0]);
+// })();
+
+// here we get only one promise as result, a rejected promise can also be the winner.
+// if we set a weird country name the rejected one will win.
+
+//* Promise.race in the real world is very useful for prevent against never ending promises or very long promises. It short circuits when the 1st promise is fulfilled.
+// If the user has a very bad internet connection, a fetch may take too long before it actually be useful. so we create a special promise
+// timeout promise that rejects after a time.
+
+const timeout = function (sec) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error('Request took too long!'));
+    }, sec * 1000);
+  });
+};
+// since here we are only interested in the reject, we replaced resolve with _
+
+Promise.race([getJSON(`https://restcountries.com/v2/name/mexico`), timeout(5)])
+  .then(res => console.log(res[0]))
+  .catch(err => console.error(err));
+// with only 1 second the timeout will resolve first and abort the getJSON.
+
+//* Promise.race and Promise.all are the two most power combinators.
+
+// Promise.allSettled ES 2020
+// Takes an array of promises abd returning an array of settled promises and never short circuits.
+
+Promise.allSettled([
+  Promise.resolve('Success'),
+  Promise.reject('Error'),
+  Promise.resolve('Another success'),
+]).then(res => console.log(res));
+
+// With the .all combinator it will short circuit if there is one rejected promise:
+Promise.all([
+  Promise.resolve('Success'),
+  Promise.reject('Error'),
+  Promise.resolve('Another success'),
+])
+  .then(res => console.log(res))
+  .catch(err => console.error(err));
+
+// Promise.any returns the first fulfilled promise and ignore the rejected promises.
+// In the .race we can have a rejected promise as the winner, in .any that happens only if all promises are rejected.
+Promise.any([
+  Promise.resolve('Success'),
+  Promise.reject('Error'),
+  Promise.resolve('Another success'),
+])
+  .then(res => console.log(res))
+  .catch(err => console.error(err));
+*/
+
+///////////////////////////////////////
+// 264 Coding Challenge #3
+
+/* 
+PART 1
+Write an async function 'loadNPause' that recreates Coding Challenge #2, this time using async/await (only the part where the promise is consumed). Compare the two versions, think about the big differences, and see which one you like more.
+Don't forget to test the error handler, and to set the network speed to 'Fast 3G' in the dev tools Network tab.
+
+PART 2
+1. Create an async function 'loadAll' that receives an array of image paths 'imgArr';
+2. Use .map to loop over the array, to load all the images with the 'createImage' function (call the resulting array 'imgs')
+3. Check out the 'imgs' array in the console! Is it like you expected?
+4. Use a promise combinator function to actually get the images from the array 😉
+5. Add the 'parallel' class to all the images (it has some CSS styles).
+
+TEST DATA: ['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']. To test, turn off the 'loadNPause' function.
+
+GOOD LUCK 😀
+*/
+
+const wait = function (seconds) {
+  return new Promise(function (resolve) {
+    setTimeout(resolve, seconds * 1000);
+  });
+};
+
+const imgContainer = document.querySelector('.images');
+
+const createImage = function (imgPath) {
+  return new Promise(function (resolve, reject) {
+    const img = document.createElement('img');
+    img.src = imgPath;
+
+    img.addEventListener('load', function () {
+      imgContainer.append(img);
+      resolve(img);
+    });
+    img.addEventListener('error', function () {
+      reject(new Error('Image not found'));
+    });
+  });
+};
+
+let currentImg;
+
+// createImage('img/img-1.jpg')
+//   .then(img => {
+//     currentImg = img;
+//     console.log('Image 1 loaded');
+//     return wait(2);
+//   })
+//   .then(() => {
+//     currentImg.style.display = 'none';
+//     return createImage('img/img-2.jpg');
+//   })
+//   .then(img => {
+//     currentImg = img;
+//     console.log('Image 2 loaded');
+//     return wait(2);
+//   })
+//   .then(() => {
+//     currentImg.style.display = 'none';
+//   })
+//   .catch(err => console.log(err));
+
+// With async await we don't need a global variable currentImg as above. The code is cleaner.
+
+const loadNPause = async function () {
+  try {
+    // Load image 1
+    let img = await createImage('img/img-1.jpg');
+    console.log('Image 1 loaded');
+    // Wait 2 seconds to hide image
+    await wait(2);
+    img.style.display = 'none';
+
+    // Load image 2
+    img = await createImage('img/img-2.jpg');
+    console.log('Image 2 loaded');
+    await wait(2);
+    img.style.display = 'none';
+  } catch (err) {
+    console.error(err);
+  }
+};
+// loadNPause();
+
+// Part 2
+// const loadAll = async function (imgArr) {
+//   try {
+//     const imgs = imgArr.map(async img => await createImage(img));
+//     console.log(imgs);
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
+// loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']);
+
+// So we have the arrow function returning the await createImage(img), and the await function always returns a promise.
+// So it will not return the value we're interested in (the fulfilled value of the promise). Behind the scenes the images
+// are being loaded. So we solve it by adding a promise.all
+
+const loadAll = async function (imgArr) {
+  try {
+    const imgs = imgArr.map(async img => await createImage(img));
+    console.log(imgs);
+    const imgsEl = await Promise.all(imgs);
+    console.log(imgsEl);
+    imgsEl.forEach(img => img.classList.add('parallel')); // nicely display of images.
+  } catch (error) {
+    console.error(error);
+  }
+};
+loadAll(['img/img-1.jpg', 'img/img-2.jpg', 'img/img-3.jpg']);
+
+//* So it worked because the await createImage paused the execution and only after the load of all 3 images we executed
+//* the Promise.all.
+
+//* Every time we use async await in a map we end up with an array of promises. This is how we handle it.
