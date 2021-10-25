@@ -35,8 +35,6 @@ add('apples', 2);
 
 console.log(cart); // so in the shoppingCart file we push the pizza, bread and apples to the cart array that was empty.
 // and in this cl we can see the array filled.
-<<<<<<< HEAD
-
 
 import shoppingCart from './shoppingCart.js';
 /*
@@ -89,3 +87,40 @@ console.log(shoppingCart.shippingCost); // undefined because it is private.
 // Importing in Node.js modules
 
 // const { addToCart } = require('./shoppingCart.js');
+
+// 272 - A brief explanation of terminal commands.
+
+// 273 - Introduction o NPM.
+
+// npm init => starts npm in the project folder and creates a node_modules folder and a package.json file.
+// npm install leaflet => installs leaflet in this project (in the previous project Mapty we inserted the library directly in the html file,
+// which is not good for security reasons, updating the library is hard...
+
+// Lodash is a library that has a lot of functions that should belong to JS but they're not. So we use them in lodash.
+// we will use the lodash-es (es modules)
+// npm i lodash-es => we can use install or i
+
+// now lets import clondeDeep from lodash-es
+import cloneDeep from './node_modules/lodash-es/cloneDeep.js';
+
+const state = {
+  cart: [
+    { product: 'bread', quantity: 5 },
+    { product: 'pizza', quantity: 5 },
+  ],
+  user: { loggedIn: true },
+};
+
+// Now let's use Object.assign to copy the state object created.
+const stateClone = Object.assign({}, state);
+console.log(stateClone); // here we have the stateClone set to false in loggedIn even though the change is after this
+// line in the code.
+
+const stateDeepClone = cloneDeep(state);
+console.log(stateDeepClone); // Here the stateDeepClone will maintain the loggedIn = true
+
+// If we change one value:
+state.user.loggedIn = false; // now the stateClone is also loggedIn = false... this
+
+// using git we can ignore the node_modules files, because if we move it to another computer the we can simply
+// use "npm i"" in the terminal and it will download all the necessary files.
