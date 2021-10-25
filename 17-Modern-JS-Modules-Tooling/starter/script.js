@@ -1,5 +1,8 @@
+<<<<<<< HEAD
 //269 - Exporting and Importing in ES6 Modules.
 /*
+=======
+>>>>>>> 4ac7a12dd309781a73d77a3060c8c91d7e650458
 // Importing Module - since the imports are hoisted, we put them in the top of the file.
 // all the imports are executed first, even if we put this in the end of the file.
 
@@ -34,6 +37,7 @@ add('apples', 2);
 
 console.log(cart); // so in the shoppingCart file we push the pizza, bread and apples to the cart array that was empty.
 // and in this cl we can see the array filled.
+<<<<<<< HEAD
 */
 
 import shoppingCart from './shoppingCart.js';
@@ -87,3 +91,5 @@ console.log(shoppingCart.shippingCost); // undefined because it is private.
 // Importing in Node.js modules
 
 // const { addToCart } = require('./shoppingCart.js');
+=======
+>>>>>>> 4ac7a12dd309781a73d77a3060c8c91d7e650458
