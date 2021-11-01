@@ -230,4 +230,61 @@ import 'regenerator-runtime/runtime';
 */
 
 //277 - Let's fix some bad code.
-// we will work in the clean.js file.
+// we worked the clean.js file.
+
+//278 - Declarative and Functional JavaScript principles.
+/*
+
+We have two fundamentally different ways of writing code (paradigms), IMPERATIVE and DECLARATIVE. 
+
+IMPERATIVE: 
+=> we tell the computer "How to do things"
+=> We expain the computer every single step it has to follow to achieve a result.
+=> Example: Step-by-step recipe of a cake
+*/
+const arr1 = [1, 2, 3, 4, 5];
+const doubled1 = [];
+for (let i = 0; i < arr1.length; i++) doubled1[i] = arr1[i] * 2;
+console.log(doubled1);
+/* Here we are telling the computer to create an array, then for each position in the array to multiply by 2 then to store it the array. there a lot of steps we give the computer to achieve the result.
+
+DECLARATIVE: 
+=> we tell the computer "What to do"
+=> we simply describe the way the computer should achieve the result.
+=> the how (step by step) the computer should do gets abstracted away. we do not care about it.
+*/
+const arr2 = [1, 2, 3, 4, 5];
+const doubled2 = arr2.map(n => n * 2);
+console.log(doubled2);
+
+/* Here we are telling the computer what he has to achieve. the empty array and initiate the count have been abstracted away.
+The declarative paradigm given rise to a sub paradigm called functional programming.
+
+FUNCTIONAL PROGRAMING:
+=> Declarative programming paradigm;
+=> Based on the idea of writing software by combining many pure functions, avoiding side effects and mutating data.
+=> Has become the modern way of writing code in JavaScript.
+=> Side Effect: Any modification of data outside the function (mutating external variables, loggin to console, writing to DOM etc), not only mutating the data.
+=> Pure function: It is a function without side effects. Does not depend on any extera] variables. //* Given the same inputs always returns the same outputs.
+=> Immutability: State means that data is never modified. Instead state is copied and the copy is mudated and returned. It makes so much easier to understand how the data flows through the entire application. That will allow to write better code with less codes and also more readable code. 
+
+
+//* Functional programming is a huge paradigm which is really difficult to implement in practice. But still very important to know the impacts. React and Redux are built with these principles. 
+
+We can mix imperative and declarative programming in our code. 
+
+FUNCTIONAL PROGRAMING TECHNIQUES:
+=> We can try to avoid the data murations;
+=> Use built-in methods that don't produce side effects;
+=> Do data transformations with methods such as .map(), .filter() and .reduce()
+=> Try to avoid side effects in functions: this is of course not always possible.
+We will never be able to avoid side effects in applications, because at some point the application needs to do something. Need to display some information in the DOM, or log in the console or really create some side effect. So
+
+DECLARATIVE SYNTAX:
+=> Use array and object desctructuring
+=> Use the spread operator (...)
+=> Use the ternary operator
+=> Use template Literals
+These 4 ways make the code more declarative, tells more what to do than how to do.
+
+*/
